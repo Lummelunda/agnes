@@ -2,64 +2,115 @@
 <html lang="sv">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Vad säger Agnes?</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
-        .category-btn { transition: all 0.2s; }
-        .category-btn:hover { transform: translateY(-2px); }
-        .category-btn.active { background-color: #2563eb; color: white; border-color: #2563eb; }
-        .result-card { transition: all 0.2s; }
-        .result-card:hover { transform: translateY(-1px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #1e293b; }
+        
+        /* Knappar */
+        .category-btn { transition: all 0.2s; white-space: nowrap; font-size: 14px; }
+        .category-btn:hover { transform: translateY(-1px); background-color: #eff6ff; }
+        
+        /* Aktiv Kategori */
+        .category-btn.active { 
+            background-color: #2563eb; 
+            color: white; 
+            border-color: #2563eb; 
+            box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.3);
+        }
+        .category-btn.active:hover { background-color: #1d4ed8; }
+
+        /* Sticky Header */
+        .sticky-search-wrapper {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background-color: rgba(255, 255, 255, 0.98);
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 0.5rem;
+            padding-top: 1rem;
+        }
+
+        .result-card { transition: transform 0.2s; }
+        .result-card:active { transform: scale(0.99); }
+
+        /* Ladda mer knapp */
+        .load-more-btn {
+            background-color: white;
+            border: 1px solid #cbd5e1;
+            color: #475569;
+            font-weight: 600;
+            padding: 10px 20px;
+            border-radius: 9999px;
+            width: 100%;
+            max-width: 300px;
+            margin: 20px auto;
+            display: block;
+            transition: all 0.2s;
+        }
+        .load-more-btn:hover {
+            background-color: #f1f5f9;
+            border-color: #94a3b8;
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
 
-    <div class="bg-white border-b border-gray-200 pt-16 pb-10 px-4 shadow-sm">
-        <div class="max-w-4xl mx-auto text-center">
+    <div class="bg-white pt-10 pb-4 px-4 text-center">
+        <h1 class="text-3xl md:text-5xl font-extrabold tracking-tight cursor-pointer text-slate-900" onclick="resetApp()">
+            Vad säger <span class="text-blue-600">Agnes?</span>
+        </h1>
+    </div>
+
+    <div class="sticky-search-wrapper px-4">
+        <div class="max-w-2xl mx-auto relative">
+            <input type="text" id="searchInput" 
+                class="w-full pl-5 pr-10 py-3.5 rounded-full bg-slate-50 border border-slate-300 text-base focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition shadow-sm placeholder:text-slate-400 truncate"
+                placeholder="Sök..." autocomplete="off">
             
-            <h1 class="text-4xl md:text-6xl font-extrabold text-slate-900 mb-4 tracking-tight">
-                Vad säger <span class="text-blue-600">Agnes?</span>
-            </h1>
-            
-            <div class="relative max-w-2xl mx-auto mt-8">
-                <input type="text" id="searchInput" 
-                    class="w-full pl-6 pr-12 py-4 rounded-full shadow-lg border-2 border-slate-100 text-lg focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition"
-                    placeholder="Sök efter socker, städning, virus..." autofocus>
-                <div class="absolute right-5 top-4 text-2xl cursor-pointer hover:scale-110 transition" onclick="resetApp()">
-                    ✖️
-                </div>
+            <div id="clearSearchBtn" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 cursor-pointer hover:text-slate-700 p-2" onclick="clearSearchText()">
+                ✕
+            </div>
+        </div>
+
+        <div class="max-w-2xl mx-auto mt-3 h-8 flex justify-center items-center">
+            <div id="activeFilterBadge" class="hidden bg-blue-50 text-blue-800 text-[11px] font-bold px-2.5 py-0.5 rounded-full flex items-center gap-2 border border-blue-100 shadow-sm">
+                <span id="activeCategoryName"></span>
+                <button onclick="clearCategory()" class="hover:text-blue-600 text-sm leading-none ml-1 p-0.5">✕</button>
             </div>
         </div>
     </div>
 
-    <main class="flex-grow max-w-4xl mx-auto px-4 py-8 w-full">
+    <main class="flex-grow max-w-3xl mx-auto px-4 py-4 w-full">
         
-        <div id="quick-filters" class="mb-10">
-            <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4 text-center">Välj ämne</h2>
+        <div id="categoryWrapper" class="mb-6">
             <div class="flex flex-wrap justify-center gap-2" id="categoryContainer">
                 </div>
         </div>
 
-        <div id="resultsHeader" class="hidden text-sm font-semibold text-slate-500 mb-4 flex justify-between items-center">
+        <div id="resultsHeader" class="hidden text-xs font-bold text-slate-400 uppercase tracking-wider mb-4 flex justify-between items-center px-1">
             <span id="resultCount"></span>
-            <button onclick="resetApp()" class="text-blue-600 hover:underline text-xs">Rensa sökning</button>
         </div>
-        <div id="results" class="space-y-4"></div>
         
-        <div id="emptyState" class="text-center py-12 text-slate-400">
-            <p>Sök eller välj en kategori för att börja.</p>
-            <button onclick="showRandom()" class="mt-4 text-sm font-semibold text-blue-600 hover:text-blue-800 hover:underline cursor-pointer">
-                🎲 Slumpa en fråga
+        <div id="results" class="space-y-5"></div>
+
+        <button id="loadMoreBtn" class="load-more-btn hidden" onclick="loadMore()">
+            Visa fler svar 👇
+        </button>
+        
+        <div id="emptyState" class="hidden text-center py-12 text-slate-400">
+            <p>Inga träffar.</p>
+            <button onclick="showRandom()" class="mt-6 text-sm font-semibold text-blue-700 hover:underline cursor-pointer bg-transparent border-none">
+                Slumpa ett svar
             </button>
         </div>
 
     </main>
 
-    <footer class="bg-slate-50 border-t border-slate-200 py-8 mt-8 text-center text-slate-400 text-sm">
+    <footer class="bg-slate-50 border-t border-slate-200 py-8 mt-8 text-center text-slate-400 text-xs">
         <p>Baserat på podden "Fråga Agnes Wold" (Sveriges Radio).</p>
     </footer>
 
@@ -67,161 +118,294 @@
 
     <script>
         let fuse;
-        let activeCategory = null;
+        let activeCategory = null; 
+        let isShowingAll = false;
+        
+        // Paginering
+        let currentFilteredResults = [];
+        let itemsToShow = 20; 
+        const batchSize = 20; 
 
-        // 1. INITIERING
         document.addEventListener('DOMContentLoaded', () => {
             if (typeof agnesData === 'undefined') {
-                document.getElementById('results').innerHTML = "<p class='text-red-500 text-center'>Kunde inte hitta data.js!</p>";
+                document.getElementById('results').innerHTML = "<p class='text-red-500 text-center'>Data saknas. Kolla data.js</p>";
                 return;
             }
-            initSearch();
             generateCategoryButtons();
+            
+            // AUTO-START: Slumpa en fråga direkt vid start
+            showRandom();
         });
 
-        function initSearch() {
+        function createSearchIndex(dataSet) {
             const options = {
                 includeScore: true,
-                threshold: 0.35, 
+                threshold: 0.3,
                 ignoreLocation: true,
+                useExtendedSearch: true, // VIKTIGT: Detta tillåter avancerad sökning
                 keys: [
-                    { name: 'question', weight: 0.5 },
+                    { name: 'question', weight: 0.6 },
                     { name: 'keywords', weight: 0.3 },
-                    { name: 'answer', weight: 0.2 }
+                    { name: 'answer', weight: 0.1 }
                 ]
             };
-            fuse = new Fuse(agnesData, options);
+            return new Fuse(dataSet, options);
         }
 
-        // 2. SKAPA KATEGORI-KNAPPAR AUTOMATISKT
         function generateCategoryButtons() {
-            // Hämta alla unika kategorier från datan
             const allCategories = new Set();
-            
             agnesData.forEach(item => {
                 if (item["category 1"]) allCategories.add(item["category 1"]);
                 if (item["category 2"]) allCategories.add(item["category 2"]);
             });
 
-            // Sortera dem (för att få 1, 2, 3... i ordning)
             const sortedCategories = Array.from(allCategories).sort();
-
             const container = document.getElementById('categoryContainer');
-            
+            container.innerHTML = "";
+
+            // 1. Skapa kategoriknappar
             sortedCategories.forEach(cat => {
-                // Ta bort siffran i början för snyggare knapp (t.ex. "2. Hygien" -> "Hygien")
-                const label = cat.replace(/^\d+\.\s*/, ''); 
-                
+                const label = cat.replace(/^\d+\.\s*/, '');
                 const btn = document.createElement('button');
-                btn.className = `category-btn bg-white border border-slate-200 px-3 py-1.5 rounded-full text-sm text-slate-600 font-medium shadow-sm hover:border-blue-300 hover:text-blue-600`;
+                btn.className = `category-btn bg-white border border-slate-300 px-4 py-2 rounded-full text-slate-600 font-medium`;
                 btn.innerText = label;
-                btn.onclick = () => toggleCategory(cat, btn);
+                btn.onclick = () => selectCategory(cat, btn);
                 container.appendChild(btn);
             });
+
+            // 2. Skapa "Alla svar"-knappen SIST
+            const allBtn = document.createElement('button');
+            allBtn.id = 'btn-all';
+            allBtn.className = `category-btn bg-white border border-slate-300 px-4 py-2 rounded-full text-slate-600 font-medium`;
+            allBtn.innerText = "Alla svar";
+            allBtn.onclick = () => showAll();
+            container.appendChild(allBtn);
         }
 
-        // 3. HANTERA SÖKNING OCH FILTRERING
-        function performSearch(query) {
+        // --- KNAPP-HANTERING ---
+
+        function showAll() {
+            // Om "Alla svar" redan är aktivt -> Klicka igen = Avmarkera (Gå till slump)
+            if (isShowingAll) {
+                resetApp(); // Detta triggar showRandom via resetApp logic
+                return;
+            }
+
+            isShowingAll = true;
+            activeCategory = null;
+            document.getElementById('searchInput').value = "";
+            
+            // Dölj filter-badge
+            document.getElementById('activeFilterBadge').classList.add('hidden');
+            
+            // Uppdatera knappar
+            document.querySelectorAll('.category-btn').forEach(b => {
+                b.classList.remove('active', 'opacity-40');
+            });
+            const btnAll = document.getElementById('btn-all');
+            btnAll.classList.add('active');
+            // De andra blir dimmade
+            document.querySelectorAll('.category-btn:not(#btn-all)').forEach(b => b.classList.add('opacity-40'));
+
+            performSearch("");
+        }
+
+        function selectCategory(catName, btnElement) {
+            // Om man klickar på samma knapp -> Avmarkera (Gå till slump)
+            if (activeCategory === catName) {
+                resetApp();
+                return;
+            }
+
+            isShowingAll = false;
+            activeCategory = catName;
+
+            // Uppdatera knappar
+            document.querySelectorAll('.category-btn').forEach(b => {
+                b.classList.remove('active');
+                b.classList.add('opacity-40'); 
+            });
+            btnElement.classList.add('active');
+            btnElement.classList.remove('opacity-40');
+
+            // Visa vald kategori i lilla badgen
+            const badge = document.getElementById('activeFilterBadge');
+            document.getElementById('activeCategoryName').innerText = catName.replace(/^\d+\.\s*/, '');
+            badge.classList.remove('hidden');
+
+            performSearch(document.getElementById('searchInput').value);
+        }
+
+        function clearCategory() {
+            // Kryss på lilla badgen -> Återställ till slump/start
+            resetApp();
+        }
+
+        // --- SÖKLOGIK ---
+
+        function performSearch(rawValue) {
+            const rawQuery = rawValue ? rawValue.trim() : "";
+            
             const container = document.getElementById('results');
             const emptyState = document.getElementById('emptyState');
             const header = document.getElementById('resultsHeader');
             const countLabel = document.getElementById('resultCount');
+            const clearBtn = document.getElementById('clearSearchBtn');
+            const loadMoreBtn = document.getElementById('loadMoreBtn');
 
-            // Nollställ om tomt
-            if (!query && !activeCategory) {
-                container.innerHTML = "";
-                emptyState.classList.remove('hidden');
-                header.classList.add('hidden');
+            // Visa rensa-knapp om text finns
+            if (rawValue.length > 0) clearBtn.classList.remove('hidden');
+            else clearBtn.classList.add('hidden');
+
+            // VIKTIGT: Om inget är valt och ingen sökning -> Visa Slumpad fråga (Startläge)
+            if (!rawQuery && !activeCategory && !isShowingAll) {
+                showRandom();
                 return;
             }
 
-            emptyState.classList.add('hidden');
-            header.classList.remove('hidden');
+            // Återställ paginering
+            itemsToShow = batchSize; 
 
-            let results = [];
-
-            // A: Om vi har en text-sökning, använd Fuse
-            if (query) {
-                const fuseResults = fuse.search(query);
-                results = fuseResults.map(r => r.item);
-            } else {
-                // B: Om ingen text, visa allt (för att sen filtrera på kategori)
-                results = agnesData;
-            }
-
-            // C: Om en kategori är vald, filtrera resultaten
+            // 1. Filtrera dataset baserat på kategori
+            let filteredData = agnesData;
             if (activeCategory) {
-                results = results.filter(item => 
+                filteredData = agnesData.filter(item => 
                     item["category 1"] === activeCategory || 
                     item["category 2"] === activeCategory
                 );
             }
 
-            countLabel.innerText = `${results.length} träffar`;
+            // 2. Sök i text (Använder nu extended search för oberoende ordning)
+            if (rawQuery === "") {
+                // Ingen text -> visa alla i nuvarande filter
+                currentFilteredResults = filteredData;
+            } else {
+                // Skapa sökterm: "socker farligt" -> "'socker 'farligt" (båda måste finnas)
+                const extendedQuery = rawQuery.split(" ").map(w => "'" + w).join(" ");
+                
+                const tempFuse = createSearchIndex(filteredData);
+                // Sök och mappa resultaten
+                currentFilteredResults = tempFuse.search(extendedQuery).map(r => r.item);
+            }
 
-            if (results.length === 0) {
-                container.innerHTML = `<div class="text-center text-slate-500 py-8">Inga träffar... 🤔</div>`;
+            // 3. UI: Resultat eller tomt?
+            if (currentFilteredResults.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center text-slate-400 py-12">
+                        <p class="text-base">Inga träffar.</p>
+                    </div>`;
+                header.classList.add('hidden');
+                loadMoreBtn.classList.add('hidden');
                 return;
             }
 
-            // Rendera korten
-            container.innerHTML = results.slice(0, 50).map(item => {
-                // Skapa etiketter för kategorier
+            // Visa resultatvy
+            emptyState.classList.add('hidden');
+            header.classList.remove('hidden');
+            countLabel.innerText = `${currentFilteredResults.length} svar`;
+
+            renderList();
+        }
+
+        function renderList() {
+            const container = document.getElementById('results');
+            const loadMoreBtn = document.getElementById('loadMoreBtn');
+
+            // Skiva ut det vi ska visa
+            const visibleItems = currentFilteredResults.slice(0, itemsToShow);
+            
+            container.innerHTML = visibleItems.map(item => {
+                // Generera kategoritaggar ALLTID (enligt önskemål)
                 let tagsHtml = "";
-                if(item["category 1"]) tagsHtml += `<span class="bg-blue-100 text-blue-700 text-[10px] px-2 py-1 rounded-full uppercase tracking-wide font-bold">${item["category 1"].replace(/^\d+\.\s*/, '')}</span>`;
-                if(item["category 2"]) tagsHtml += `<span class="bg-gray-100 text-gray-600 text-[10px] px-2 py-1 rounded-full uppercase tracking-wide font-bold ml-2">${item["category 2"].replace(/^\d+\.\s*/, '')}</span>`;
+                if(item["category 1"]) tagsHtml += `<span class="bg-blue-50 text-blue-700 text-[10px] px-2 py-1 rounded-full font-bold uppercase tracking-wider border border-blue-100 mr-2">${item["category 1"].replace(/^\d+\.\s*/, '')}</span>`;
+                if(item["category 2"]) tagsHtml += `<span class="bg-slate-50 text-slate-600 text-[10px] px-2 py-1 rounded-full font-bold uppercase tracking-wider border border-slate-200">${item["category 2"].replace(/^\d+\.\s*/, '')}</span>`;
 
                 return `
-                    <div class="result-card bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                        <div class="mb-3 flex flex-wrap gap-2">
+                    <div class="result-card bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                        <div class="mb-3 flex flex-wrap gap-y-2">
                             ${tagsHtml}
                         </div>
-                        <h3 class="font-bold text-lg text-slate-900 mb-3">${item.question}</h3>
-                        <div class="bg-slate-50 p-4 rounded-xl mb-4 border border-slate-100">
-                            <p class="text-slate-700 leading-relaxed text-sm md:text-base">${item.answer}</p>
+                        <h3 class="font-bold text-lg text-slate-900 mb-3 leading-tight">${item.question}</h3>
+                        <div class="bg-slate-50 p-4 rounded-lg mb-4">
+                            <p class="text-slate-800 text-sm md:text-base leading-relaxed">${item.answer}</p>
                         </div>
-                        <div class="flex justify-between items-center text-xs font-medium text-slate-400 border-t border-slate-50 pt-3">
-                            <span>📅 ${item.date}</span>
-                            <a href="${item.url}" target="_blank" class="flex items-center gap-1 text-blue-600 hover:text-blue-800 transition">
-                                Lyssna på avsnittet →
+                        <div class="flex justify-between items-center text-xs font-medium text-slate-400 mt-2">
+                            <span>${item.date}</span>
+                            <a href="${item.url}" target="_blank" class="text-blue-700 hover:underline">
+                                Lyssna
                             </a>
                         </div>
                     </div>
                 `;
             }).join('');
+
+            // Hantera "Ladda fler"-knappen
+            if (currentFilteredResults.length > itemsToShow) {
+                loadMoreBtn.classList.remove('hidden');
+                loadMoreBtn.innerText = `Visa fler (${currentFilteredResults.length - itemsToShow} kvar)`;
+            } else {
+                loadMoreBtn.classList.add('hidden');
+            }
         }
 
-        // 4. INTERAKTION
+        function loadMore() {
+            itemsToShow += batchSize;
+            renderList();
+        }
+
         const searchInput = document.getElementById('searchInput');
         searchInput.addEventListener('input', (e) => performSearch(e.target.value));
 
-        function toggleCategory(catName, btnElement) {
-            // Återställ alla knappar
-            document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
-
-            if (activeCategory === catName) {
-                // Avmarkera om man klickar på samma igen
-                activeCategory = null;
-            } else {
-                // Markera ny
-                activeCategory = catName;
-                btnElement.classList.add('active');
-            }
-            performSearch(searchInput.value);
+        function clearSearchText() {
+            searchInput.value = "";
+            searchInput.focus();
+            performSearch("");
         }
 
         function showRandom() {
             const randomItem = agnesData[Math.floor(Math.random() * agnesData.length)];
-            // Vi fuskar genom att söka på den specifika frågan för att visa just det kortet
-            searchInput.value = randomItem.question;
-            performSearch(randomItem.question);
+            
+            // Nollställ allt
+            searchInput.value = "";
+            activeCategory = null;
+            isShowingAll = false;
+            
+            // UI Reset
+            document.getElementById('activeFilterBadge').classList.add('hidden');
+            document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active', 'opacity-40'));
+            
+            const container = document.getElementById('results');
+            const emptyState = document.getElementById('emptyState');
+            const header = document.getElementById('resultsHeader');
+            const loadMoreBtn = document.getElementById('loadMoreBtn');
+            
+            emptyState.classList.add('hidden');
+            header.classList.remove('hidden');
+            loadMoreBtn.classList.add('hidden');
+            document.getElementById('resultCount').innerText = "Slumpat svar";
+            
+            // Taggar för slumpkortet
+            let tagsHtml = "";
+            if(randomItem["category 1"]) tagsHtml += `<span class="bg-blue-50 text-blue-700 text-[10px] px-2 py-1 rounded-full font-bold uppercase tracking-wider border border-blue-100 mr-2">${randomItem["category 1"].replace(/^\d+\.\s*/, '')}</span>`;
+            if(randomItem["category 2"]) tagsHtml += `<span class="bg-slate-50 text-slate-600 text-[10px] px-2 py-1 rounded-full font-bold uppercase tracking-wider border border-slate-200">${randomItem["category 2"].replace(/^\d+\.\s*/, '')}</span>`;
+
+            container.innerHTML = `
+                <div class="result-card bg-white p-6 rounded-xl shadow-md border border-blue-200 relative mt-2 ring-4 ring-blue-50">
+                    <div class="absolute top-0 right-0 bg-blue-100 text-blue-800 text-[10px] font-bold px-2 py-1 rounded-bl-lg uppercase">Slumpad</div>
+                    <div class="mb-3 mt-2 flex flex-wrap gap-y-2">${tagsHtml}</div>
+                    <h3 class="font-bold text-lg text-slate-900 mb-3">${randomItem.question}</h3>
+                    <div class="bg-slate-50 p-4 rounded-lg mb-4">
+                        <p class="text-slate-800 leading-relaxed">${randomItem.answer}</p>
+                    </div>
+                    <div class="text-center mt-6">
+                        <button onclick="showRandom()" class="text-sm text-blue-700 font-bold hover:underline">🎲 Slumpa en till</button>
+                    </div>
+                </div>
+            `;
         }
 
         function resetApp() {
-            searchInput.value = "";
-            activeCategory = null;
-            document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
-            performSearch("");
+            showRandom();
         }
     </script>
 </body>
