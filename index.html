@@ -9,19 +9,20 @@
     * { box-sizing: border-box; }
 
     :root{
-      --maxw: 920px;
+      --maxw: 750px;
       --pad: 16px;
       --radius: 14px;
       --border: #d6d6d6;
       --muted: #666;
       --chip: #f2f2f2;
       --sep: #e2e2e2;
+      --sticky-bg: rgba(255,255,255,0.92);
     }
 
     body{
       margin: 0;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-      background: #fff;
+      background: #fdfdfd;
       color: #111;
     }
 
@@ -44,6 +45,22 @@
       margin: 0 0 14px;
     }
 
+    /* Sticky header area (search + filters + hits) */
+    .sticky-bar{
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: var(--sticky-bg);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      padding: 10px 0 10px;
+      border-bottom: 1px solid transparent;
+    }
+
+    .sticky-bar.scrolled{
+      border-bottom-color: #eee;
+    }
+
     /* Search */
     .search-row{
       position: relative;
@@ -59,6 +76,7 @@
       border-radius: var(--radius);
       outline: none;
       display: block;
+      background: #fff;
     }
 
     .search-input:focus{ border-color: #111; }
@@ -81,12 +99,38 @@
 
     .clear-btn:hover{ color: #111; }
 
+    /* Mobile filter toggle */
+    .filter-toggle-row{
+      display: none;
+      margin: 2px 0 12px;
+    }
+
+    .filter-toggle{
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: #fff;
+      font-size: 14px;
+      cursor: pointer;
+      color: #111;
+    }
+
+    .filter-toggle span{
+      color: var(--muted);
+      font-size: 13px;
+    }
+
     /* Category chips */
     .categories{
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      margin: 10px 0 18px;
+      margin: 10px 0 12px;
     }
 
     .chip{
@@ -107,18 +151,15 @@
       color: #fff;
     }
 
-    /* Status row (used for both random + list) */
-    .status-row{
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      margin: 12px 0 14px;
+    /* Hits line INSIDE sticky */
+    .hits{
       font-size: 13px;
       color: var(--muted);
+      padding-top: 8px;
+      padding-bottom: 2px;
     }
 
-    /* X button style (same as search X) */
+    /* X button style */
     .x-btn{
       border: 0;
       background: transparent;
@@ -139,7 +180,7 @@
       padding: 14px;
       margin: 0 0 18px;
       background: #fff;
-      position: relative; /* for corner X */
+      position: relative;
     }
 
     .random-x{
@@ -171,8 +212,8 @@
     .card-meta{
       font-size: 13px;
       color: var(--muted);
-      margin-top: 14px;
-      margin-bottom: 10px;
+      margin-top: 12px;
+      margin-bottom: 12px;
     }
 
     .tags{
@@ -220,6 +261,11 @@
     }
 
     a{ color: inherit; }
+
+    @media (max-width: 640px){
+      .filter-toggle-row{ display: block; }
+      .sticky-bar{ padding-top: 8px; }
+    }
   </style>
 </head>
 
@@ -228,20 +274,28 @@
     <h1>Vad säger Agnes?</h1>
     <p id="ingress" class="ingress"></p>
 
-    <div class="search-row">
-      <input id="searchInput" class="search-input" placeholder="Sök på ord eller fras…" autocomplete="off">
-      <button id="clearBtn" class="clear-btn" type="button" aria-label="Rensa sökfält">×</button>
+    <div id="stickyBar" class="sticky-bar">
+      <div class="search-row">
+        <input id="searchInput" class="search-input" placeholder="Sök på ord eller fras…" autocomplete="off">
+        <button id="clearBtn" class="clear-btn" type="button" aria-label="Rensa sökfält">×</button>
+      </div>
+
+      <div class="filter-toggle-row">
+        <button id="toggleCategories" class="filter-toggle" type="button" aria-expanded="false" aria-controls="categories">
+          <div id="toggleLabel">Filtrera efter kategori</div>
+          <span id="toggleHint">Visa</span>
+        </button>
+      </div>
+
+      <div id="categories" class="categories"></div>
+
+      <!-- hits line lives inside sticky -->
+      <div id="hitsLine" class="hits"></div>
     </div>
 
-    <div id="categories" class="categories"></div>
+    <!-- Anchor: scroll to start of results (just below sticky) -->
+    <div id="resultsTop" style="height:1px;"></div>
 
-    <!-- Status row: text only (no close button here) -->
-    <div id="statusRow" class="status-row" style="display:none;">
-      <div id="statusText"></div>
-      <div></div>
-    </div>
-
-    <!-- Random card (only for first empty state) -->
     <div id="randomWrap" class="random-wrap" style="display:none;">
       <button id="randomClose" class="x-btn random-x" type="button" aria-label="Stäng slumpad fråga">×</button>
       <div id="randomCard"></div>
@@ -319,12 +373,13 @@
       ]
     });
 
+    const stickyBar = document.getElementById("stickyBar");
+    const resultsTop = document.getElementById("resultsTop");
+    const hitsLine = document.getElementById("hitsLine");
+
     const searchInput = document.getElementById("searchInput");
     const clearBtn = document.getElementById("clearBtn");
     const categoriesEl = document.getElementById("categories");
-
-    const statusRow = document.getElementById("statusRow");
-    const statusText = document.getElementById("statusText");
 
     const randomWrap = document.getElementById("randomWrap");
     const randomCard = document.getElementById("randomCard");
@@ -334,11 +389,42 @@
     const loadMoreWrap = document.getElementById("loadMoreWrap");
     const loadMoreBtn = document.getElementById("loadMoreBtn");
 
+    // Mobile categories toggle
+    const toggleBtn = document.getElementById("toggleCategories");
+    const toggleLabel = document.getElementById("toggleLabel");
+    const toggleHint = document.getElementById("toggleHint");
+
+    const isMobileMQ = window.matchMedia && window.matchMedia("(max-width: 640px)");
+    function isMobile(){ return !!(isMobileMQ && isMobileMQ.matches); }
+    let categoriesOpen = !isMobile();
+
+    function setCategoriesOpen(open){
+      categoriesOpen = open;
+
+      if (!isMobile()) {
+        categoriesEl.style.display = "flex";
+        return;
+      }
+
+      categoriesEl.style.display = open ? "flex" : "none";
+      toggleBtn.setAttribute("aria-expanded", open ? "true" : "false");
+      toggleHint.textContent = open ? "Dölj" : "Visa";
+    }
+
+    function updateToggleLabel(){
+      if (!isMobile()) return;
+      toggleLabel.textContent = activeCategory ? `Kategori: ${activeCategory}` : "Filtrera efter kategori";
+    }
+
+    if (toggleBtn){
+      toggleBtn.addEventListener("click", () => setCategoriesOpen(!categoriesOpen));
+    }
+
+    // App state
     let activeCategory = "";
     let visibleCount = 20;
     const step = 20;
 
-    // Random only before any interaction; after that, empty state shows full list.
     let hasInteracted = false;
     function setInteracted(){ hasInteracted = true; }
 
@@ -346,10 +432,22 @@
       clearBtn.style.display = searchInput.value.trim() ? "block" : "none";
     }
 
-    function showStatus(text){
-      statusRow.style.display = "flex";
-      statusText.textContent = text || "";
+    function setHitsText(text){
+      hitsLine.textContent = text || "";
     }
+
+    // Scroll to just below sticky (start of results)
+    function scrollToResultsTop(){
+      const stickyH = stickyBar.getBoundingClientRect().height;
+      const y = resultsTop.getBoundingClientRect().top + window.scrollY - stickyH - 8;
+      window.scrollTo({ top: Math.max(0, y), behavior: "smooth" });
+    }
+
+    // Subtle divider when scrolling
+    window.addEventListener("scroll", () => {
+      if (window.scrollY > 6) stickyBar.classList.add("scrolled");
+      else stickyBar.classList.remove("scrolled");
+    }, { passive: true });
 
     clearBtn.addEventListener("click", () => {
       setInteracted();
@@ -357,7 +455,7 @@
       syncClearButton();
       visibleCount = 20;
       searchInput.focus();
-      search();
+      search(true);
     });
 
     searchInput.addEventListener("keydown", (e) => {
@@ -366,11 +464,11 @@
         searchInput.value = "";
         syncClearButton();
         visibleCount = 20;
-        search();
+        search(true);
       }
     });
 
-    // Category chips (single-select)
+    // Category chips
     const categorySet = new Set(docs.map(d => d.category1).filter(Boolean));
     [...categorySet].sort((a,b)=>a.localeCompare(b,"sv")).forEach(cat => {
       const chip = document.createElement("button");
@@ -387,8 +485,11 @@
         document.querySelectorAll("#categories .chip").forEach(c => c.classList.remove("active"));
         if (!isSame) chip.classList.add("active");
 
+        updateToggleLabel();
+        if (isMobile()) setCategoriesOpen(false);
+
         visibleCount = 20;
-        search();
+        search(true);
       });
 
       categoriesEl.appendChild(chip);
@@ -398,7 +499,7 @@
       setInteracted();
       visibleCount = 20;
       renderList(getBaseList(), []);
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      scrollToResultsTop();
     });
 
     function renderCardInto(container, d, terms, withHighlight){
@@ -432,7 +533,7 @@
 
           syncClearButton();
           visibleCount = 20;
-          search();
+          search(true);
         });
       });
     }
@@ -483,7 +584,7 @@
     }
 
     function showRandom(){
-      showStatus("Slumpad fråga");
+      setHitsText("Slumpad fråga");
 
       resultsEl.innerHTML = "";
       loadMoreWrap.style.display = "none";
@@ -502,14 +603,14 @@
 
       const total = list.length;
       if (!total){
-        showStatus("Inga träffar.");
+        setHitsText("Inga träffar.");
         loadMoreWrap.style.display = "none";
         resultsEl.innerHTML = `<div class="empty">Prova andra ord eller välj en annan kategori.</div>`;
         return;
       }
 
       const catPart = activeCategory ? ` i ${activeCategory}` : "";
-      showStatus(`${total} träffar${catPart}`);
+      setHitsText(`${total} träffar${catPart}`);
 
       const shown = list.slice(0, Math.min(visibleCount, total));
       shown.forEach(d => {
@@ -531,28 +632,29 @@
       };
     }
 
-    function search(){
+    function search(scrollAfter = false){
       const terms = tokenize(searchInput.value);
       const nothingSelected = !terms.length && !activeCategory;
 
-      // Random only before any interaction
       if (nothingSelected && !hasInteracted){
         showRandom();
+        if (scrollAfter) scrollToResultsTop();
         return;
       }
 
-      // After interaction: empty + no category => full list
       if (nothingSelected && hasInteracted){
         visibleCount = 20;
         renderList(getBaseList(), []);
+        if (scrollAfter) scrollToResultsTop();
         return;
       }
 
-      // Search mode
       setInteracted();
 
       const results = terms.length ? fuzzyAndSearch(terms) : getBaseList();
       renderList(results, terms);
+
+      if (scrollAfter) scrollToResultsTop();
     }
 
     function debounce(fn, ms=140){
@@ -565,7 +667,7 @@
 
     const debouncedSearch = debounce(() => {
       visibleCount = 20;
-      search();
+      search(false);
     }, 140);
 
     searchInput.addEventListener("input", () => {
@@ -575,9 +677,18 @@
       debouncedSearch();
     });
 
-    // initial
+    // Initial UI state
+    setCategoriesOpen(!isMobile());
+    updateToggleLabel();
     syncClearButton();
-    search();
+    search(false);
+
+    if (isMobileMQ){
+      isMobileMQ.addEventListener?.("change", () => {
+        setCategoriesOpen(!isMobile());
+        updateToggleLabel();
+      });
+    }
   </script>
 </body>
 </html>
