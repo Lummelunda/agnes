@@ -1,6 +1,6 @@
 # Vad säger Agnes?
 
-Sök bland 1195 svar. Baserat på podden “Fråga Agnes Wold” (Sveriges Radio).
+Sök bland 1195 svar. Baserat på podden “[Fråga Agnes Wold]([url](https://www.sverigesradio.se/artikel/om--4))” (Sveriges Radio).
 
 Du kan:
 - söka på valfria ord/fraser (fråga, svar och nyckelord)
@@ -9,3 +9,4 @@ Du kan:
 - dela ett specifikt svar via en länk
 
 URL: https://lummelunda.github.io/agnes/
+
