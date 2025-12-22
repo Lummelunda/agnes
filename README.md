@@ -2,7 +2,7 @@
 
 Sök bland 1195 svar. Baserat på podden "Fråga Agnes Wold" (Sveriges Radio).
 
-Om podden: https://www.sverigesradio.se/artikel/om--4)
+Om podden: https://www.sverigesradio.se/artikel/om--4
 
 Du kan:
 - söka på valfria ord/fraser (fråga, svar och nyckelord)
