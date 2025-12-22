@@ -258,24 +258,13 @@
   <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
 
   <script>
-  function norm(str){
-    const s = (str || "").toLowerCase();
-  
-    // Försök modern Unicode (stöd i moderna Chromium + nyare Safari)
-    try{
-      return s
+    function norm(str){
+      return (str || "")
+        .toLowerCase()
         .replace(/[^\p{L}\p{N}\s]+/gu, " ")
         .replace(/\s+/g, " ")
         .trim();
-    } catch {
-      // Fallback (funkar i äldre mobil-Safari)
-      return s
-        // behåll a–z, 0–9 och svenska åäö
-        .replace(/[^a-z0-9åäö\s]+/gi, " ")
-        .replace(/\s+/g, " ")
-        .trim();
     }
-  }
 
     function tokenize(q){
       return norm(q).split(" ").filter(Boolean);
