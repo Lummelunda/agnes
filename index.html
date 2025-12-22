@@ -9,7 +9,7 @@
     * { box-sizing: border-box; }
 
     :root{
-      --maxw: 750px;
+      --maxw: 920px;
       --pad: 16px;
       --radius: 14px;
       --border: #d6d6d6;
@@ -173,8 +173,8 @@
 
     .x-btn:hover{ color: #111; }
 
-    /* Random card */
-    .random-wrap{
+    /* Random / Shared card wrappers */
+    .panel{
       border: 1px solid #e7e7e7;
       border-radius: var(--radius);
       padding: 14px;
@@ -183,7 +183,7 @@
       position: relative;
     }
 
-    .random-x{
+    .panel-x{
       position: absolute;
       top: 10px;
       right: 12px;
@@ -214,6 +214,11 @@
       color: var(--muted);
       margin-top: 12px;
       margin-bottom: 12px;
+    }
+
+    .share{
+      text-decoration: underline;
+      cursor: pointer;
     }
 
     .tags{
@@ -288,16 +293,21 @@
       </div>
 
       <div id="categories" class="categories"></div>
-
-      <!-- hits line lives inside sticky -->
       <div id="hitsLine" class="hits"></div>
     </div>
 
-    <!-- Anchor: scroll to start of results (just below sticky) -->
+    <!-- Anchor: start of results area -->
     <div id="resultsTop" style="height:1px;"></div>
 
-    <div id="randomWrap" class="random-wrap" style="display:none;">
-      <button id="randomClose" class="x-btn random-x" type="button" aria-label="Stäng slumpad fråga">×</button>
+    <!-- Shared link view (single card) -->
+    <div id="sharedWrap" class="panel" style="display:none;">
+      <button id="sharedClose" class="x-btn panel-x" type="button" aria-label="Stäng delad fråga">×</button>
+      <div id="sharedCard"></div>
+    </div>
+
+    <!-- Random view (single card) -->
+    <div id="randomWrap" class="panel" style="display:none;">
+      <button id="randomClose" class="x-btn panel-x" type="button" aria-label="Stäng slumpad fråga">×</button>
       <div id="randomCard"></div>
     </div>
 
@@ -358,6 +368,8 @@
       };
     });
 
+    const byId = new Map(docs.map(d => [String(d.id), d]));
+
     document.getElementById("ingress").textContent =
       `Sök bland ${docs.length} svar. Baserat på podden “Fråga Agnes Wold” (Sveriges Radio).`;
 
@@ -380,6 +392,10 @@
     const searchInput = document.getElementById("searchInput");
     const clearBtn = document.getElementById("clearBtn");
     const categoriesEl = document.getElementById("categories");
+
+    const sharedWrap = document.getElementById("sharedWrap");
+    const sharedCard = document.getElementById("sharedCard");
+    const sharedClose = document.getElementById("sharedClose");
 
     const randomWrap = document.getElementById("randomWrap");
     const randomCard = document.getElementById("randomCard");
@@ -436,11 +452,23 @@
       hitsLine.textContent = text || "";
     }
 
-    // Scroll to just below sticky (start of results)
+    // Scroll to just below sticky (start of results/panels)
     function scrollToResultsTop(){
       const stickyH = stickyBar.getBoundingClientRect().height;
       const y = resultsTop.getBoundingClientRect().top + window.scrollY - stickyH - 8;
       window.scrollTo({ top: Math.max(0, y), behavior: "smooth" });
+    }
+
+    // Hide single-card modes
+    function hidePanels(){
+      sharedWrap.style.display = "none";
+      sharedCard.innerHTML = "";
+      randomWrap.style.display = "none";
+      randomCard.innerHTML = "";
+    }
+
+    function clearHash(){
+      if (location.hash) history.replaceState(null, "", location.pathname + location.search);
     }
 
     // Subtle divider when scrolling
@@ -451,6 +479,9 @@
 
     clearBtn.addEventListener("click", () => {
       setInteracted();
+      clearHash();          // leaving shared mode if any
+      hidePanels();
+
       searchInput.value = "";
       syncClearButton();
       visibleCount = 20;
@@ -461,6 +492,9 @@
     searchInput.addEventListener("keydown", (e) => {
       if (e.key === "Escape"){
         setInteracted();
+        clearHash();
+        hidePanels();
+
         searchInput.value = "";
         syncClearButton();
         visibleCount = 20;
@@ -468,7 +502,7 @@
       }
     });
 
-    // Category chips
+    // Category chips (single-select)
     const categorySet = new Set(docs.map(d => d.category1).filter(Boolean));
     [...categorySet].sort((a,b)=>a.localeCompare(b,"sv")).forEach(cat => {
       const chip = document.createElement("button");
@@ -478,6 +512,8 @@
 
       chip.addEventListener("click", () => {
         setInteracted();
+        clearHash();   // leaving shared mode if any
+        hidePanels();
 
         const isSame = (activeCategory === cat);
         activeCategory = isSame ? "" : cat;
@@ -495,8 +531,18 @@
       categoriesEl.appendChild(chip);
     });
 
+    sharedClose.addEventListener("click", () => {
+      setInteracted();
+      clearHash();
+      hidePanels();
+      visibleCount = 20;
+      renderList(getBaseList(), []);
+      scrollToResultsTop();
+    });
+
     randomClose.addEventListener("click", () => {
       setInteracted();
+      hidePanels();
       visibleCount = 20;
       renderList(getBaseList(), []);
       scrollToResultsTop();
@@ -506,6 +552,8 @@
       const q = withHighlight ? highlight(d.question, terms) : escapeHtml(d.question);
       const a = withHighlight ? highlight(d.answer, terms) : escapeHtml(d.answer);
 
+      const shareHtml = ` · <a href="#id-${escapeHtml(String(d.id))}" class="share" data-share="${escapeHtml(String(d.id))}">Dela</a>`;
+
       container.innerHTML = `
         <div class="question">${q}</div>
         <p class="answer">${a}</p>
@@ -513,6 +561,7 @@
           ${escapeHtml(d.date || "")}
           ${d.category1 ? " · " + escapeHtml(d.category1) : ""}
           ${d.url ? ` · <a href="${escapeHtml(d.url)}" target="_blank" rel="noopener">Källa</a>` : ""}
+          ${shareHtml}
         </div>
         <div class="tags">
           ${(d._keywords || []).map(k =>
@@ -526,6 +575,8 @@
       scopeEl.querySelectorAll(".tag").forEach(tag => {
         tag.addEventListener("click", () => {
           setInteracted();
+          clearHash();     // leaving shared mode if any
+          hidePanels();
 
           const kw = tag.getAttribute("data-kw") || "";
           const cur = searchInput.value.trim();
@@ -534,6 +585,24 @@
           syncClearButton();
           visibleCount = 20;
           search(true);
+        });
+      });
+    }
+
+    function attachShareClicks(scopeEl){
+      scopeEl.querySelectorAll("[data-share]").forEach(a => {
+        a.addEventListener("click", async (e) => {
+          e.preventDefault();
+
+          const id = a.getAttribute("data-share");
+          const hash = `id-${id}`;
+          const url = `${location.origin}${location.pathname}#${hash}`;
+
+          // Set hash (will open shared view)
+          location.hash = hash;
+
+          // best effort copy
+          try { await navigator.clipboard.writeText(url); } catch {}
         });
       });
     }
@@ -552,7 +621,7 @@
         for (const r of res){
           const d = r.item;
           if (activeCategory && d.category1 !== activeCategory) continue;
-          m.set(d.id, (r.score ?? 1));
+          m.set(String(d.id), (r.score ?? 1));
         }
         return m;
       });
@@ -579,26 +648,47 @@
 
       const scoreMap = new Map(scored.map(x => [x.id, x.score]));
       return docs
-        .filter(d => scoreMap.has(d.id))
-        .sort((a,b) => (scoreMap.get(a.id) - scoreMap.get(b.id)) || (b._dateSafe.localeCompare(a._dateSafe)));
+        .filter(d => scoreMap.has(String(d.id)))
+        .sort((a,b) => (scoreMap.get(String(a.id)) - scoreMap.get(String(b.id))) || (b._dateSafe.localeCompare(a._dateSafe)));
     }
 
-    function showRandom(){
-      setHitsText("Slumpad fråga");
-
+    function showShared(idStr){
+      const d = byId.get(idStr);
+      hidePanels();
       resultsEl.innerHTML = "";
       loadMoreWrap.style.display = "none";
 
+      if (!d){
+        setHitsText("Hittar inte den delade länken.");
+        sharedWrap.style.display = "block";
+        sharedCard.innerHTML = `<div class="empty">Den här länken verkar inte stämma.</div>`;
+        scrollToResultsTop();
+        return;
+      }
+
+      setHitsText("Delad fråga");
+      sharedWrap.style.display = "block";
+      renderCardInto(sharedCard, d, [], false);
+      attachKeywordClicks(sharedWrap);
+      attachShareClicks(sharedWrap);
+      scrollToResultsTop();
+    }
+
+    function showRandom(){
+      hidePanels();
+      resultsEl.innerHTML = "";
+      loadMoreWrap.style.display = "none";
+
+      setHitsText("Slumpad fråga");
       randomWrap.style.display = "block";
       const random = docs[Math.floor(Math.random() * docs.length)];
       renderCardInto(randomCard, random, [], false);
       attachKeywordClicks(randomWrap);
+      attachShareClicks(randomWrap);
     }
 
     function renderList(list, terms){
-      randomWrap.style.display = "none";
-      randomCard.innerHTML = "";
-
+      hidePanels();
       resultsEl.innerHTML = "";
 
       const total = list.length;
@@ -616,11 +706,13 @@
       shown.forEach(d => {
         const el = document.createElement("div");
         el.className = "card";
+        el.id = `id-${d.id}`; // stable anchor for sharing
         renderCardInto(el, d, terms, true);
         resultsEl.appendChild(el);
       });
 
       attachKeywordClicks(resultsEl);
+      attachShareClicks(resultsEl);
 
       const canLoadMore = visibleCount < total;
       loadMoreWrap.style.display = canLoadMore ? "flex" : "none";
@@ -635,6 +727,15 @@
     function search(scrollAfter = false){
       const terms = tokenize(searchInput.value);
       const nothingSelected = !terms.length && !activeCategory;
+
+      // If a shared hash exists, shared mode wins
+      const hash = (location.hash || "").replace("#", "");
+      if (hash.startsWith("id-")){
+        hasInteracted = true;
+        const idStr = hash.replace("id-", "");
+        showShared(idStr);
+        return;
+      }
 
       if (nothingSelected && !hasInteracted){
         showRandom();
@@ -676,6 +777,13 @@
       visibleCount = 20;
       debouncedSearch();
     });
+
+    // Handle shared hash changes
+    function onHashChange(){
+      visibleCount = 20;
+      search(true);
+    }
+    window.addEventListener("hashchange", onHashChange);
 
     // Initial UI state
     setCategoriesOpen(!isMobile());
