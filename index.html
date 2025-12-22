@@ -1,410 +1,583 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="sv">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Vad säger Agnes?</title>
-    <meta name="description" content="Sök bland hundratals frågor och svar från Agnes Wold.">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #1e293b; }
-        
-        /* Knappar */
-        .category-btn { transition: all 0.2s; white-space: nowrap; font-size: 14px; }
-        .category-btn:hover { transform: translateY(-1px); background-color: #eff6ff; }
-        
-        /* Aktiv Kategori */
-        .category-btn.active { 
-            background-color: #2563eb; 
-            color: white; 
-            border-color: #2563eb; 
-            box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.3);
-        }
-        .category-btn.active:hover { background-color: #1d4ed8; }
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Vad säger Agnes?</title>
 
-        /* Sticky Header */
-        .sticky-search-wrapper {
-            position: sticky;
-            top: 0;
-            z-index: 50;
-            background-color: rgba(255, 255, 255, 0.98);
-            border-bottom: 1px solid #e2e8f0;
-            padding-bottom: 0.5rem;
-            padding-top: 1rem;
-        }
+  <style>
+    * { box-sizing: border-box; }
 
-        /* Animation för filter-taggen */
-        #activeFilterWrapper {
-            transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out, margin 0.3s ease;
-            max-height: 0;
-            opacity: 0;
-            overflow: hidden;
-        }
-        #activeFilterWrapper.visible {
-            max-height: 40px;
-            opacity: 1;
-            margin-top: 0.5rem;
-        }
+    :root{
+      --maxw: 920px;
+      --pad: 16px;
+      --radius: 14px;
+      --border: #d6d6d6;
+      --muted: #666;
+      --chip: #f2f2f2;
+      --sep: #e2e2e2;
+    }
 
-        .result-card { transition: transform 0.2s; }
-        .result-card:active { transform: scale(0.99); }
+    body{
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background: #fff;
+      color: #111;
+    }
 
-        /* Ladda mer knapp */
-        .load-more-btn {
-            background-color: white;
-            border: 1px solid #cbd5e1;
-            color: #475569;
-            font-weight: 600;
-            padding: 10px 20px;
-            border-radius: 9999px;
-            width: 100%;
-            max-width: 300px;
-            margin: 20px auto;
-            display: block;
-            transition: all 0.2s;
-        }
-        .load-more-btn:hover {
-            background-color: #f1f5f9;
-            border-color: #94a3b8;
-        }
-    </style>
+    .container{
+      max-width: var(--maxw);
+      margin: 0 auto;
+      padding: 24px var(--pad) 40px;
+      width: 100%;
+    }
+
+    h1{
+      margin: 0 0 8px;
+      font-size: 28px;
+      line-height: 1.2;
+    }
+
+    .ingress{
+      font-size: 13px;
+      color: var(--muted);
+      margin: 0 0 14px;
+    }
+
+    /* Search */
+    .search-row{
+      position: relative;
+      width: 100%;
+      margin-bottom: 12px;
+    }
+
+    .search-input{
+      width: 100%;
+      padding: 12px 40px 12px 14px;
+      font-size: 16px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      outline: none;
+      display: block;
+    }
+
+    .search-input:focus{ border-color: #111; }
+
+    .clear-btn{
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      border: 0;
+      background: transparent;
+      padding: 0;
+      margin: 0;
+      cursor: pointer;
+      font-size: 20px;
+      line-height: 1;
+      color: #666;
+      display: none;
+    }
+
+    .clear-btn:hover{ color: #111; }
+
+    /* Category chips */
+    .categories{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 10px 0 18px;
+    }
+
+    .chip{
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: var(--chip);
+      font-size: 13px;
+      cursor: pointer;
+      user-select: none;
+      border: 0;
+      color: inherit;
+      line-height: 1.1;
+      white-space: nowrap;
+    }
+
+    .chip.active{
+      background: #111;
+      color: #fff;
+    }
+
+    /* Status row (used for both random + list) */
+    .status-row{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin: 12px 0 14px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    /* X button style (same as search X) */
+    .x-btn{
+      border: 0;
+      background: transparent;
+      padding: 0;
+      margin: 0;
+      cursor: pointer;
+      font-size: 20px;
+      line-height: 1;
+      color: #666;
+    }
+
+    .x-btn:hover{ color: #111; }
+
+    /* Random card */
+    .random-wrap{
+      border: 1px solid #e7e7e7;
+      border-radius: var(--radius);
+      padding: 14px;
+      margin: 0 0 18px;
+      background: #fff;
+      position: relative; /* for corner X */
+    }
+
+    .random-x{
+      position: absolute;
+      top: 10px;
+      right: 12px;
+    }
+
+    /* Cards */
+    .card{
+      border-bottom: 1px solid var(--sep);
+      padding: 16px 0;
+    }
+
+    .question{
+      font-weight: 650;
+      margin-bottom: 8px;
+      font-size: 18px;
+      line-height: 1.35;
+    }
+
+    .answer{
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.55;
+      overflow-wrap: anywhere;
+    }
+
+    .card-meta{
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 14px;
+      margin-bottom: 10px;
+    }
+
+    .tags{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    .tag{
+      background: var(--chip);
+      font-size: 12px;
+      padding: 5px 9px;
+      border-radius: 999px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    mark{ padding: 0 2px; }
+
+    .empty{
+      color: #666;
+      padding: 18px 0;
+    }
+
+    /* Load more */
+    .load-more-wrap{
+      margin-top: 18px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .btn{
+      border: 1px solid var(--border);
+      background: #fff;
+      padding: 10px 14px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .btn:disabled{
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    a{ color: inherit; }
+  </style>
 </head>
-<body class="min-h-screen flex flex-col">
 
-    <div class="bg-white pt-10 pb-4 px-4 text-center">
-        <button onclick="resetApp()" class="text-3xl md:text-5xl font-extrabold tracking-tight text-slate-900 bg-transparent border-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-lg p-1">
-            Vad säger <span class="text-blue-600">Agnes?</span>
-        </button>
+<body>
+  <div class="container">
+    <h1>Vad säger Agnes?</h1>
+    <p id="ingress" class="ingress"></p>
+
+    <div class="search-row">
+      <input id="searchInput" class="search-input" placeholder="Sök på ord eller fras…" autocomplete="off">
+      <button id="clearBtn" class="clear-btn" type="button" aria-label="Rensa sökfält">×</button>
     </div>
 
-    <div class="sticky-search-wrapper px-4">
-        <div class="max-w-2xl mx-auto relative">
-            <input type="text" id="searchInput" 
-                class="w-full pl-5 pr-10 py-3.5 rounded-full bg-slate-50 border border-slate-300 text-base focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200 transition shadow-sm placeholder:text-slate-400 truncate"
-                placeholder="Sök..." autocomplete="off" aria-label="Sök efter ämnen">
-            
-            <button id="clearSearchBtn" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 cursor-pointer hover:text-slate-700 p-2 bg-transparent border-none" onclick="clearSearchText()" aria-label="Rensa sökning">
-                ✕
-            </button>
-        </div>
+    <div id="categories" class="categories"></div>
 
-        <div class="max-w-2xl mx-auto mt-3 h-8 flex justify-center items-center">
-            <div id="activeFilterBadge" class="hidden bg-blue-50 text-blue-800 text-[11px] font-bold px-2.5 py-0.5 rounded-full flex items-center gap-2 border border-blue-100 shadow-sm">
-                <span id="activeCategoryName"></span>
-                <button onclick="clearCategory()" class="hover:text-blue-600 text-sm leading-none ml-1 p-0.5 bg-transparent border-none cursor-pointer" aria-label="Ta bort kategori">✕</button>
-            </div>
-        </div>
+    <!-- Status row: text only (no close button here) -->
+    <div id="statusRow" class="status-row" style="display:none;">
+      <div id="statusText"></div>
+      <div></div>
     </div>
 
-    <main class="flex-grow max-w-3xl mx-auto px-4 py-4 w-full">
-        
-        <div id="categoryWrapper" class="mb-6">
-            <div class="flex flex-wrap justify-center gap-2" id="categoryContainer">
-                </div>
+    <!-- Random card (only for first empty state) -->
+    <div id="randomWrap" class="random-wrap" style="display:none;">
+      <button id="randomClose" class="x-btn random-x" type="button" aria-label="Stäng slumpad fråga">×</button>
+      <div id="randomCard"></div>
+    </div>
+
+    <div id="results"></div>
+
+    <div id="loadMoreWrap" class="load-more-wrap" style="display:none;">
+      <button id="loadMoreBtn" class="btn" type="button">Visa fler</button>
+    </div>
+  </div>
+
+  <script src="./data.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
+
+  <script>
+    function norm(str){
+      return (str || "")
+        .toLowerCase()
+        .replace(/[^\p{L}\p{N}\s]+/gu, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    function tokenize(q){
+      return norm(q).split(" ").filter(Boolean);
+    }
+
+    function escapeHtml(str){
+      return (str || "").replace(/[&<>"']/g, m => ({
+        "&":"&amp;","<":"&lt;",">":"&gt;",
+        "\"":"&quot;","'":"&#039;"
+      }[m]));
+    }
+
+    function escapeRegExp(s){
+      return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    }
+
+    function highlight(text, terms){
+      let out = escapeHtml(text);
+      for (const t of terms){
+        if (t.length < 2) continue;
+        const re = new RegExp(`(${escapeRegExp(t)})`, "ig");
+        out = out.replace(re, "<mark>$1</mark>");
+      }
+      return out;
+    }
+
+    if (typeof agnesData === "undefined") throw new Error("data.js laddades inte eller agnesData saknas");
+    if (typeof Fuse === "undefined") throw new Error("Fuse.js laddades inte.");
+
+    const docs = agnesData.map(d => {
+      const kw = Array.isArray(d.keywords) ? d.keywords : [];
+      return {
+        ...d,
+        _keywords: kw,
+        _keywordsText: kw.join(" "),
+        _dateSafe: d.date || ""
+      };
+    });
+
+    document.getElementById("ingress").textContent =
+      `Sök bland ${docs.length} svar. Baserat på podden “Fråga Agnes Wold” (Sveriges Radio).`;
+
+    const fuse = new Fuse(docs, {
+      includeScore: true,
+      ignoreLocation: true,
+      threshold: 0.35,
+      minMatchCharLength: 2,
+      keys: [
+        { name: "question", weight: 0.60 },
+        { name: "_keywordsText", weight: 0.28 },
+        { name: "answer", weight: 0.12 }
+      ]
+    });
+
+    const searchInput = document.getElementById("searchInput");
+    const clearBtn = document.getElementById("clearBtn");
+    const categoriesEl = document.getElementById("categories");
+
+    const statusRow = document.getElementById("statusRow");
+    const statusText = document.getElementById("statusText");
+
+    const randomWrap = document.getElementById("randomWrap");
+    const randomCard = document.getElementById("randomCard");
+    const randomClose = document.getElementById("randomClose");
+
+    const resultsEl = document.getElementById("results");
+    const loadMoreWrap = document.getElementById("loadMoreWrap");
+    const loadMoreBtn = document.getElementById("loadMoreBtn");
+
+    let activeCategory = "";
+    let visibleCount = 20;
+    const step = 20;
+
+    // Random only before any interaction; after that, empty state shows full list.
+    let hasInteracted = false;
+    function setInteracted(){ hasInteracted = true; }
+
+    function syncClearButton(){
+      clearBtn.style.display = searchInput.value.trim() ? "block" : "none";
+    }
+
+    function showStatus(text){
+      statusRow.style.display = "flex";
+      statusText.textContent = text || "";
+    }
+
+    clearBtn.addEventListener("click", () => {
+      setInteracted();
+      searchInput.value = "";
+      syncClearButton();
+      visibleCount = 20;
+      searchInput.focus();
+      search();
+    });
+
+    searchInput.addEventListener("keydown", (e) => {
+      if (e.key === "Escape"){
+        setInteracted();
+        searchInput.value = "";
+        syncClearButton();
+        visibleCount = 20;
+        search();
+      }
+    });
+
+    // Category chips (single-select)
+    const categorySet = new Set(docs.map(d => d.category1).filter(Boolean));
+    [...categorySet].sort((a,b)=>a.localeCompare(b,"sv")).forEach(cat => {
+      const chip = document.createElement("button");
+      chip.type = "button";
+      chip.className = "chip";
+      chip.textContent = cat;
+
+      chip.addEventListener("click", () => {
+        setInteracted();
+
+        const isSame = (activeCategory === cat);
+        activeCategory = isSame ? "" : cat;
+
+        document.querySelectorAll("#categories .chip").forEach(c => c.classList.remove("active"));
+        if (!isSame) chip.classList.add("active");
+
+        visibleCount = 20;
+        search();
+      });
+
+      categoriesEl.appendChild(chip);
+    });
+
+    randomClose.addEventListener("click", () => {
+      setInteracted();
+      visibleCount = 20;
+      renderList(getBaseList(), []);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+
+    function renderCardInto(container, d, terms, withHighlight){
+      const q = withHighlight ? highlight(d.question, terms) : escapeHtml(d.question);
+      const a = withHighlight ? highlight(d.answer, terms) : escapeHtml(d.answer);
+
+      container.innerHTML = `
+        <div class="question">${q}</div>
+        <p class="answer">${a}</p>
+        <div class="card-meta">
+          ${escapeHtml(d.date || "")}
+          ${d.category1 ? " · " + escapeHtml(d.category1) : ""}
+          ${d.url ? ` · <a href="${escapeHtml(d.url)}" target="_blank" rel="noopener">Källa</a>` : ""}
         </div>
-
-        <div id="resultsHeader" class="hidden text-xs font-bold text-slate-400 uppercase tracking-wider mb-4 flex justify-between items-center px-1">
-            <span id="resultCount"></span>
+        <div class="tags">
+          ${(d._keywords || []).map(k =>
+            `<span class="tag" data-kw="${escapeHtml(k)}">${escapeHtml(k)}</span>`
+          ).join("")}
         </div>
-        
-        <div id="results" class="space-y-5" aria-live="polite"></div>
+      `;
+    }
 
-        <button id="loadMoreBtn" class="load-more-btn hidden" onclick="loadMore()">
-            Visa fler svar 👇
-        </button>
-        
-        <div id="emptyState" class="hidden text-center py-12 text-slate-400">
-            <p>Inga träffar.</p>
-            <button onclick="showRandom()" class="mt-6 text-sm font-semibold text-blue-700 hover:underline cursor-pointer bg-transparent border-none">
-                Slumpa ett svar
-            </button>
-        </div>
+    function attachKeywordClicks(scopeEl){
+      scopeEl.querySelectorAll(".tag").forEach(tag => {
+        tag.addEventListener("click", () => {
+          setInteracted();
 
-    </main>
+          const kw = tag.getAttribute("data-kw") || "";
+          const cur = searchInput.value.trim();
+          searchInput.value = cur ? (cur + " " + kw) : kw;
 
-    <footer class="bg-slate-50 border-t border-slate-200 py-8 mt-8 text-center text-slate-400 text-xs">
-        <p>Baserat på podden "Fråga Agnes Wold" (Sveriges Radio).</p>
-    </footer>
-
-    <script src="data.js"></script>
-
-    <script>
-        let fuse;
-        let activeCategory = null; 
-        let isShowingAll = false;
-        
-        // Paginering & Timer
-        let currentFilteredResults = [];
-        let itemsToShow = 20; 
-        const batchSize = 20; 
-        let debounceTimer;
-
-        document.addEventListener('DOMContentLoaded', () => {
-            if (typeof agnesData === 'undefined') {
-                document.getElementById('results').innerHTML = "<p class='text-red-500 text-center'>Data saknas. Kolla data.js</p>";
-                return;
-            }
-            generateCategoryButtons();
-            
-            // AUTO-START: Slumpa en fråga direkt
-            showRandom();
+          syncClearButton();
+          visibleCount = 20;
+          search();
         });
+      });
+    }
 
-        // Säkerhetsfunktion
-        function escapeHtml(text) {
-            if (!text) return "";
-            return text
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#039;");
+    function getBaseList(){
+      return docs
+        .filter(d => !activeCategory || d.category1 === activeCategory)
+        .slice()
+        .sort((a,b)=>b._dateSafe.localeCompare(a._dateSafe));
+    }
+
+    function fuzzyAndSearch(terms){
+      const maps = terms.map(t => {
+        const res = fuse.search(t, { limit: 500 });
+        const m = new Map();
+        for (const r of res){
+          const d = r.item;
+          if (activeCategory && d.category1 !== activeCategory) continue;
+          m.set(d.id, (r.score ?? 1));
+        }
+        return m;
+      });
+
+      if (!maps.length) return [];
+
+      const first = maps[0];
+      const scored = [];
+
+      for (const [id, sc] of first.entries()){
+        let total = sc;
+        let ok = true;
+
+        for (let i = 1; i < maps.length; i++){
+          const v = maps[i].get(id);
+          if (v === undefined){ ok = false; break; }
+          total += v;
         }
 
-        function createSearchIndex(dataSet) {
-            const options = {
-                includeScore: true,
-                threshold: 0.3,
-                ignoreLocation: true,
-                useExtendedSearch: true,
-                keys: [
-                    { name: 'question', weight: 0.6 },
-                    { name: 'keywords', weight: 0.3 },
-                    { name: 'answer', weight: 0.1 }
-                ]
-            };
-            return new Fuse(dataSet, options);
-        }
+        if (ok) scored.push({ id, score: total });
+      }
 
-        function generateCategoryButtons() {
-            const allCategories = new Set();
-            agnesData.forEach(item => {
-                if (item["category 1"]) allCategories.add(item["category 1"]);
-                if (item["category 2"]) allCategories.add(item["category 2"]);
-            });
+      scored.sort((a,b)=>a.score - b.score);
 
-            const sortedCategories = Array.from(allCategories).sort();
-            const container = document.getElementById('categoryContainer');
-            container.innerHTML = "";
+      const scoreMap = new Map(scored.map(x => [x.id, x.score]));
+      return docs
+        .filter(d => scoreMap.has(d.id))
+        .sort((a,b) => (scoreMap.get(a.id) - scoreMap.get(b.id)) || (b._dateSafe.localeCompare(a._dateSafe)));
+    }
 
-            sortedCategories.forEach(cat => {
-                const label = cat.replace(/^\d+\.\s*/, '');
-                const btn = document.createElement('button');
-                btn.className = `category-btn bg-white border border-slate-300 px-4 py-2 rounded-full text-slate-600 font-medium cursor-pointer`;
-                btn.innerText = label;
-                btn.onclick = () => selectCategory(cat, btn);
-                container.appendChild(btn);
-            });
+    function showRandom(){
+      showStatus("Slumpad fråga");
 
-            const allBtn = document.createElement('button');
-            allBtn.id = 'btn-all';
-            allBtn.className = `category-btn bg-white border border-slate-300 px-4 py-2 rounded-full text-slate-600 font-medium cursor-pointer`;
-            allBtn.innerText = "Alla svar";
-            allBtn.onclick = () => showAll();
-            container.appendChild(allBtn);
-        }
+      resultsEl.innerHTML = "";
+      loadMoreWrap.style.display = "none";
 
-        function showAll() {
-            if (isShowingAll) { resetApp(); return; }
+      randomWrap.style.display = "block";
+      const random = docs[Math.floor(Math.random() * docs.length)];
+      renderCardInto(randomCard, random, [], false);
+      attachKeywordClicks(randomWrap);
+    }
 
-            isShowingAll = true;
-            activeCategory = null;
-            document.getElementById('searchInput').value = "";
-            document.getElementById('activeFilterBadge').classList.add('hidden');
-            
-            updateButtonStates(document.getElementById('btn-all'));
-            performSearch("");
-        }
+    function renderList(list, terms){
+      randomWrap.style.display = "none";
+      randomCard.innerHTML = "";
 
-        function selectCategory(catName, btnElement) {
-            if (activeCategory === catName) { resetApp(); return; }
+      resultsEl.innerHTML = "";
 
-            isShowingAll = false;
-            activeCategory = catName;
+      const total = list.length;
+      if (!total){
+        showStatus("Inga träffar.");
+        loadMoreWrap.style.display = "none";
+        resultsEl.innerHTML = `<div class="empty">Prova andra ord eller välj en annan kategori.</div>`;
+        return;
+      }
 
-            updateButtonStates(btnElement);
+      const catPart = activeCategory ? ` i ${activeCategory}` : "";
+      showStatus(`${total} träffar${catPart}`);
 
-            const badge = document.getElementById('activeFilterBadge');
-            document.getElementById('activeCategoryName').innerText = catName.replace(/^\d+\.\s*/, '');
-            badge.classList.remove('hidden');
+      const shown = list.slice(0, Math.min(visibleCount, total));
+      shown.forEach(d => {
+        const el = document.createElement("div");
+        el.className = "card";
+        renderCardInto(el, d, terms, true);
+        resultsEl.appendChild(el);
+      });
 
-            performSearch(document.getElementById('searchInput').value);
-        }
+      attachKeywordClicks(resultsEl);
 
-        function updateButtonStates(activeBtn) {
-            document.querySelectorAll('.category-btn').forEach(b => {
-                b.classList.remove('active');
-                b.classList.add('opacity-40'); 
-            });
-            if (activeBtn) {
-                activeBtn.classList.add('active');
-                activeBtn.classList.remove('opacity-40');
-            }
-        }
+      const canLoadMore = visibleCount < total;
+      loadMoreWrap.style.display = canLoadMore ? "flex" : "none";
+      loadMoreBtn.disabled = !canLoadMore;
 
-        function clearCategory() {
-            resetApp(); 
-        }
+      loadMoreBtn.onclick = () => {
+        visibleCount += step;
+        renderList(list, terms);
+      };
+    }
 
-        function handleInput(e) {
-            clearTimeout(debounceTimer);
-            debounceTimer = setTimeout(() => {
-                performSearch(e.target.value);
-            }, 200);
-        }
+    function search(){
+      const terms = tokenize(searchInput.value);
+      const nothingSelected = !terms.length && !activeCategory;
 
-        function performSearch(rawValue) {
-            const rawQuery = rawValue ? rawValue.trim() : "";
-            
-            const container = document.getElementById('results');
-            const emptyState = document.getElementById('emptyState');
-            const header = document.getElementById('resultsHeader');
-            const countLabel = document.getElementById('resultCount');
-            const clearBtn = document.getElementById('clearSearchBtn');
-            const loadMoreBtn = document.getElementById('loadMoreBtn');
+      // Random only before any interaction
+      if (nothingSelected && !hasInteracted){
+        showRandom();
+        return;
+      }
 
-            if (rawValue.length > 0) clearBtn.classList.remove('hidden');
-            else clearBtn.classList.add('hidden');
+      // After interaction: empty + no category => full list
+      if (nothingSelected && hasInteracted){
+        visibleCount = 20;
+        renderList(getBaseList(), []);
+        return;
+      }
 
-            if (!rawQuery && !activeCategory && !isShowingAll) {
-                showRandom();
-                return;
-            }
+      // Search mode
+      setInteracted();
 
-            itemsToShow = batchSize; 
+      const results = terms.length ? fuzzyAndSearch(terms) : getBaseList();
+      renderList(results, terms);
+    }
 
-            let filteredData = agnesData;
-            if (activeCategory) {
-                filteredData = agnesData.filter(item => 
-                    item["category 1"] === activeCategory || 
-                    item["category 2"] === activeCategory
-                );
-            }
+    function debounce(fn, ms=140){
+      let t;
+      return (...args) => {
+        clearTimeout(t);
+        t = setTimeout(() => fn(...args), ms);
+      };
+    }
 
-            if (rawQuery === "") {
-                currentFilteredResults = filteredData;
-            } else {
-                const extendedQuery = rawQuery.split(/\s+/).filter(Boolean).map(w => "'" + w).join(" ");
-                const tempFuse = createSearchIndex(filteredData);
-                currentFilteredResults = tempFuse.search(extendedQuery).map(r => r.item);
-            }
+    const debouncedSearch = debounce(() => {
+      visibleCount = 20;
+      search();
+    }, 140);
 
-            if (currentFilteredResults.length === 0) {
-                container.innerHTML = `
-                    <div class="text-center text-slate-400 py-12">
-                        <p class="text-base">Inga träffar.</p>
-                    </div>`;
-                header.classList.add('hidden');
-                loadMoreBtn.classList.add('hidden');
-                return;
-            }
+    searchInput.addEventListener("input", () => {
+      syncClearButton();
+      if (searchInput.value.trim()) setInteracted();
+      visibleCount = 20;
+      debouncedSearch();
+    });
 
-            emptyState.classList.add('hidden');
-            header.classList.remove('hidden');
-            countLabel.innerText = `${currentFilteredResults.length} svar`;
-
-            renderList();
-        }
-
-        // --- SKAPA KORT HTML (Nu med tvingande taggar) ---
-        function createCardHtml(item, isRandom = false) {
-            let tagsHtml = "";
-            
-            // HÄR ÄR FIXEN: Vi genererar alltid taggar, oavsett filterstatus
-            if(item["category 1"]) {
-                tagsHtml += `<span class="bg-blue-50 text-blue-700 text-[10px] px-2 py-1 rounded-full font-bold uppercase tracking-wider border border-blue-100 mr-2">${escapeHtml(item["category 1"].replace(/^\d+\.\s*/, ''))}</span>`;
-            }
-            if(item["category 2"]) {
-                tagsHtml += `<span class="bg-slate-50 text-slate-600 text-[10px] px-2 py-1 rounded-full font-bold uppercase tracking-wider border border-slate-200">${escapeHtml(item["category 2"].replace(/^\d+\.\s*/, ''))}</span>`;
-            }
-
-            const extraClasses = isRandom ? "shadow-md border-blue-200 ring-4 ring-blue-50 relative mt-2" : "shadow-sm border-slate-200";
-            const randomBadge = isRandom ? `<div class="absolute top-0 right-0 bg-blue-100 text-blue-800 text-[10px] font-bold px-2 py-1 rounded-bl-lg uppercase">Slumpad</div>` : "";
-            
-            let safeUrl = "#";
-            if (item.url && (item.url.startsWith("http://") || item.url.startsWith("https://"))) {
-                safeUrl = encodeURI(item.url);
-            }
-
-            return `
-                <div class="result-card bg-white p-6 rounded-xl border ${extraClasses}">
-                    ${randomBadge}
-                    <div class="mb-3 flex flex-wrap gap-y-2">
-                        ${tagsHtml}
-                    </div>
-                    <h3 class="font-bold text-lg text-slate-900 mb-3 leading-tight">${escapeHtml(item.question)}</h3>
-                    <div class="bg-slate-50 p-4 rounded-lg mb-4">
-                        <p class="text-slate-800 text-sm md:text-base leading-relaxed">${escapeHtml(item.answer)}</p>
-                    </div>
-                    <div class="flex justify-between items-center text-xs font-medium text-slate-400 mt-2">
-                        <span>${escapeHtml(item.date)}</span>
-                        <a href="${safeUrl}" target="_blank" rel="noopener noreferrer" class="text-blue-700 hover:underline">
-                            Lyssna
-                        </a>
-                    </div>
-                    ${isRandom ? `<div class="text-center mt-6"><button onclick="showRandom()" class="text-sm text-blue-700 font-bold hover:underline cursor-pointer bg-transparent border-none">🎲 Slumpa en till</button></div>` : ''}
-                </div>
-            `;
-        }
-
-        function renderList() {
-            const container = document.getElementById('results');
-            const loadMoreBtn = document.getElementById('loadMoreBtn');
-            const visibleItems = currentFilteredResults.slice(0, itemsToShow);
-            
-            container.innerHTML = visibleItems.map(item => createCardHtml(item, false)).join('');
-
-            if (currentFilteredResults.length > itemsToShow) {
-                loadMoreBtn.classList.remove('hidden');
-                loadMoreBtn.innerText = `Visa fler (${currentFilteredResults.length - itemsToShow} kvar)`;
-            } else {
-                loadMoreBtn.classList.add('hidden');
-            }
-        }
-
-        function loadMore() {
-            itemsToShow += batchSize;
-            renderList();
-        }
-
-        const searchInput = document.getElementById('searchInput');
-        searchInput.addEventListener('input', handleInput);
-
-        function clearSearchText() {
-            searchInput.value = "";
-            searchInput.focus();
-            performSearch("");
-        }
-
-        function showRandom() {
-            const randomItem = agnesData[Math.floor(Math.random() * agnesData.length)];
-            
-            searchInput.value = "";
-            activeCategory = null;
-            isShowingAll = false;
-            
-            document.getElementById('activeFilterBadge').classList.add('hidden');
-            document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active', 'opacity-40'));
-            
-            const container = document.getElementById('results');
-            const emptyState = document.getElementById('emptyState');
-            const header = document.getElementById('resultsHeader');
-            const loadMoreBtn = document.getElementById('loadMoreBtn');
-            
-            emptyState.classList.add('hidden');
-            header.classList.remove('hidden');
-            loadMoreBtn.classList.add('hidden');
-            document.getElementById('resultCount').innerText = "Slumpat svar";
-            
-            // Använd createCardHtml för enhetlighet
-            container.innerHTML = createCardHtml(randomItem, true);
-        }
-
-        function resetApp() {
-            showRandom();
-        }
-    </script>
+    // initial
+    syncClearButton();
+    search();
+  </script>
 </body>
 </html>
