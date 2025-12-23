@@ -40,7 +40,7 @@ Här samlas frågor om hur vi blir sjuka, hur smitta sprids och hur vi skyddar o
 **Exempel:** Varför blir man sjuk på vintern? Kan man stärka sitt immunförsvar? Hur fungerar vaccin?
 
 ### 2. Hygien, Städning & Bakterieskräck
-Agnes Wold pratar ofta om skillnaden mellan medicinsk hygien och kulturell renlighet. Denna kategori hanterar frågor om smuts och städning.
+Om skillnaden mellan medicinsk hygien och kulturell renlighet. Denna kategori hanterar frågor om smuts och städning.
 
 **Innehåll:** Damm, städning, tvätt av kläder och sängkläder, handhygien, toalettbesök samt bakterier i hemmet (disktrasa, tangentbord m.m.).
 
@@ -54,7 +54,7 @@ Frågor om vad vi stoppar i oss, både ur ett hälsoperspektiv och ett säkerhet
 **Exempel:** Är socker farligt? Kan man äta mögligt bröd? Behöver vi C-vitamin?
 
 ### 4. Mage, Tarm & Matsmältning
-Ett stort fokusområde då många frågor rör maghälsa, avföring och tarmsjukdomar.
+Ett fokusområde som rör maghälsa, avföring och tarmsjukdomar.
 
 **Innehåll:** IBS, gaser, förstoppning, diarré, tarmflora, probiotika och hur matsmältningen fungerar.
 
