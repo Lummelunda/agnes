@@ -13,7 +13,6 @@ Du kan:
 URL till webbappen:  
 https://lummelunda.github.io/agnes/
 
----
 
 ## Källan
 
@@ -28,7 +27,6 @@ Texterna i denna sammanställning har bearbetats och redigerats med hjälp av en
 
 Alla avsnitt och ursprungligt innehåll tillhör Sveriges Radio. Varje fråga länkar tillbaka till sin källa hos Sveriges Radio, där det fullständiga sammanhanget finns.
 
----
 
 ## Fördjupning: kategorier
 
@@ -41,16 +39,12 @@ Här samlas frågor om hur vi blir sjuka, hur smitta sprids och hur vi skyddar o
 
 **Exempel:** Varför blir man sjuk på vintern? Kan man stärka sitt immunförsvar? Hur fungerar vaccin?
 
----
-
 ### 2. Hygien, Städning & Bakterieskräck
 Agnes Wold pratar ofta om skillnaden mellan medicinsk hygien och kulturell renlighet. Denna kategori hanterar frågor om smuts och städning.
 
 **Innehåll:** Damm, städning, tvätt av kläder och sängkläder, handhygien, toalettbesök samt bakterier i hemmet (disktrasa, tangentbord m.m.).
 
 **Exempel:** Är dammråttor farliga? Måste man tvätta i 60 grader? Blir man renare av att duscha?
-
----
 
 ### 3. Mat, Näring & Livsmedelssäkerhet
 Frågor om vad vi stoppar i oss, både ur ett hälsoperspektiv och ett säkerhetsperspektiv.
@@ -59,16 +53,12 @@ Frågor om vad vi stoppar i oss, både ur ett hälsoperspektiv och ett säkerhet
 
 **Exempel:** Är socker farligt? Kan man äta mögligt bröd? Behöver vi C-vitamin?
 
----
-
 ### 4. Mage, Tarm & Matsmältning
 Ett stort fokusområde då många frågor rör maghälsa, avföring och tarmsjukdomar.
 
 **Innehåll:** IBS, gaser, förstoppning, diarré, tarmflora, probiotika och hur matsmältningen fungerar.
 
 **Exempel:** Varför får man ont i magen? Är det farligt att fisa? Hjälper probiotika?
-
----
 
 ### 5. Allergier & Överkänslighet
 Fokus på allergier och överkänslighet, där många vanliga missuppfattningar reds ut.
@@ -77,16 +67,12 @@ Fokus på allergier och överkänslighet, där många vanliga missuppfattningar 
 
 **Exempel:** Kan man bota allergi genom att städa? Är pälsdjursallergi kopplat till pälsen?
 
----
-
 ### 6. Hud, Hår & Sol
 Frågor om kroppens yttre försvar och utseende.
 
 **Innehåll:** Solning och UV-ljus, rynkor, hudkrämer, sår, eksem, svett, håravfall och hygienprodukter.
 
 **Exempel:** Hjälper dyra krämer mot rynkor? Är det farligt att sola? Varför tappar män hår?
-
----
 
 ### 7. Kvinnohälsa, Barn & Graviditet
 Biologiska skillnader, reproduktion och barnens första tid i livet.
@@ -95,7 +81,6 @@ Biologiska skillnader, reproduktion och barnens första tid i livet.
 
 **Exempel:** Skyddar amning mot allergi? Vad händer i klimakteriet? Varför skriker bebisar?
 
----
 
 ### 8. Sjukdomar & Krämpor (icke-smittsamma)
 Kroniska sjukdomar, smärta och allvarliga diagnoser som inte är infektioner.
@@ -104,16 +89,12 @@ Kroniska sjukdomar, smärta och allvarliga diagnoser som inte är infektioner.
 
 **Exempel:** Är högt kolesterol farligt? Hjälper motion mot artros? Vad orsakar migrän?
 
----
-
 ### 9. Livsstil: Sömn, Alkohol & Stress
 Frågor om vardagsvanor och hur de påverkar hälsa och välmående.
 
 **Innehåll:** Sömnproblem, dygnsrytm, alkoholens effekter, bakfylla, stress, motion och psykiskt mående.
 
 **Exempel:** Är det farligt att sova för lite? Hjälper varannan vatten? Kan man stressa sig sjuk?
-
----
 
 ### 10. Åldrande & Döden
 Frågor om kroppens naturliga åldrande och livets slutskede.
