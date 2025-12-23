@@ -13,6 +13,22 @@ Du kan:
 URL till webbappen:  
 https://lummelunda.github.io/agnes/
 
+## Kategorier
+
+Innehållet är organiserat i tio övergripande kategorier:
+
+1. Infektioner, Virus & Vaccin  
+2. Hygien, Städning & Bakterieskräck  
+3. Mat, Näring & Livsmedelssäkerhet  
+4. Mage, Tarm & Matsmältning  
+5. Allergier & Överkänslighet  
+6. Hud, Hår & Sol  
+7. Kvinnohälsa, Barn & Graviditet  
+8. Sjukdomar & Krämpor (icke-smittsamma)  
+9. Livsstil: Sömn, Alkohol & Stress  
+10. Åldrande & Döden  
+
+Kategorierna är tänkta som stöd för navigering och speglar återkommande teman i podden.
 
 ## Källan
 
