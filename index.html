@@ -507,7 +507,7 @@
     const byId = new Map(docs.map(d => [String(d.id), d]));
 
     document.getElementById("ingress").textContent =
-      `Sök bland ${docs.length} svar. Baserat på podden “Fråga Agnes Wold” (Sveriges Radio).`;
+      `Sök bland ${docs.length} svar. Baserat på podden “Fråga Agnes Wold”.`;
 
     const fuse = new Fuse(docs, {
       includeScore: true,
