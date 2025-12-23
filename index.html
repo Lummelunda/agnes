@@ -8,22 +8,84 @@
   <style>
     * { box-sizing: border-box; }
 
+    /* Theme tokens (default = light) */
     :root{
       --maxw: 920px;
       --pad: 16px;
       --radius: 14px;
+
+      --bg: #fdfdfd;
+      --text: #111111;
+      --muted: #666666;
+
       --border: #d6d6d6;
-      --muted: #666;
-      --chip: #f2f2f2;
       --sep: #e2e2e2;
+      --panel-border: #e7e7e7;
+
+      --chip: #f2f2f2;
+      --chip-active-bg: #111111;
+      --chip-active-text: #ffffff;
+
       --sticky-bg: rgba(255,255,255,0.92);
+
+      --mark-bg: #ffe696;
+    }
+
+    /* System dark mode (applies only if user has not set a manual theme) */
+    @media (prefers-color-scheme: dark){
+      :root{
+        --bg: #0b0c0f;
+        --text: #e9e9ea;
+        --muted: #a6a6aa;
+
+        --border: #2a2d33;
+        --sep: #23262c;
+        --panel-border: #23262c;
+
+        --chip: #1a1d22;
+        --chip-active-bg: #e9e9ea;
+        --chip-active-text: #0b0c0f;
+
+        --sticky-bg: rgba(11,12,15,0.85);
+
+        --mark-bg: #3a2f00;
+      }
+    }
+
+    /* Manual overrides */
+    html[data-theme="light"]{
+      --bg: #fdfdfd;
+      --text: #111111;
+      --muted: #666666;
+      --border: #d6d6d6;
+      --sep: #e2e2e2;
+      --panel-border: #e7e7e7;
+      --chip: #f2f2f2;
+      --chip-active-bg: #111111;
+      --chip-active-text: #ffffff;
+      --sticky-bg: rgba(255,255,255,0.92);
+      --mark-bg: #ffe696;
+    }
+
+    html[data-theme="dark"]{
+      --bg: #0b0c0f;
+      --text: #e9e9ea;
+      --muted: #a6a6aa;
+      --border: #2a2d33;
+      --sep: #23262c;
+      --panel-border: #23262c;
+      --chip: #1a1d22;
+      --chip-active-bg: #e9e9ea;
+      --chip-active-text: #0b0c0f;
+      --sticky-bg: rgba(11,12,15,0.85);
+      --mark-bg: #3a2f00;
     }
 
     body{
       margin: 0;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-      background: #fdfdfd;
-      color: #111;
+      background: var(--bg);
+      color: var(--text);
     }
 
     .container{
@@ -58,7 +120,7 @@
     }
 
     .sticky-bar.scrolled{
-      border-bottom-color: #eee;
+      border-bottom-color: var(--sep);
     }
 
     /* Search */
@@ -76,10 +138,11 @@
       border-radius: var(--radius);
       outline: none;
       display: block;
-      background: #fff;
+      background: var(--bg);
+      color: var(--text);
     }
 
-    .search-input:focus{ border-color: #111; }
+    .search-input:focus{ border-color: var(--text); }
 
     .clear-btn{
       position: absolute;
@@ -93,11 +156,11 @@
       cursor: pointer;
       font-size: 20px;
       line-height: 1;
-      color: #666;
+      color: var(--muted);
       display: none;
     }
 
-    .clear-btn:hover{ color: #111; }
+    .clear-btn:hover{ color: var(--text); }
 
     /* Mobile filter toggle */
     .filter-toggle-row{
@@ -114,10 +177,10 @@
       padding: 10px 12px;
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      background: #fff;
+      background: var(--bg);
       font-size: 14px;
       cursor: pointer;
-      color: #111;
+      color: var(--text);
     }
 
     .filter-toggle span{
@@ -141,22 +204,44 @@
       cursor: pointer;
       user-select: none;
       border: 0;
-      color: inherit;
+      color: var(--text);
       line-height: 1.1;
       white-space: nowrap;
     }
 
     .chip.active{
-      background: #111;
-      color: #fff;
+      background: var(--chip-active-bg);
+      color: var(--chip-active-text);
     }
 
-    /* Hits line INSIDE sticky */
-    .hits{
-      font-size: 13px;
-      color: var(--muted);
+    /* Hits line INSIDE sticky + theme toggle */
+    .hits-row{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
       padding-top: 8px;
       padding-bottom: 2px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .theme-chip{
+      background: var(--chip);
+      border: 0;
+      color: var(--text);
+      border-radius: 999px;
+      padding: 7px 12px;
+      font-size: 13px;
+      cursor: pointer;
+      user-select: none;
+      line-height: 1.1;
+      white-space: nowrap;
+    }
+
+    .theme-chip:hover{
+      outline: 1px solid var(--border);
+      outline-offset: 1px;
     }
 
     /* X button style */
@@ -168,18 +253,18 @@
       cursor: pointer;
       font-size: 20px;
       line-height: 1;
-      color: #666;
+      color: var(--muted);
     }
 
-    .x-btn:hover{ color: #111; }
+    .x-btn:hover{ color: var(--text); }
 
     /* Random / Shared card wrappers */
     .panel{
-      border: 1px solid #e7e7e7;
+      border: 1px solid var(--panel-border);
       border-radius: var(--radius);
       padding: 14px;
       margin: 0 0 18px;
-      background: #fff;
+      background: var(--bg);
       position: relative;
     }
 
@@ -212,8 +297,8 @@
     .card-meta{
       font-size: 13px;
       color: var(--muted);
-      margin-top: 12px;
-      margin-bottom: 12px;
+      margin-top: 14px;
+      margin-bottom: 10px;
     }
 
     .share{
@@ -235,12 +320,18 @@
       border-radius: 999px;
       cursor: pointer;
       user-select: none;
+      color: var(--text);
     }
 
-    mark{ padding: 0 2px; }
+    mark{
+      padding: 0 2px;
+      background: var(--mark-bg);
+      color: inherit;
+      border-radius: 3px;
+    }
 
     .empty{
-      color: #666;
+      color: var(--muted);
       padding: 18px 0;
     }
 
@@ -253,11 +344,12 @@
 
     .btn{
       border: 1px solid var(--border);
-      background: #fff;
+      background: var(--bg);
       padding: 10px 14px;
       border-radius: 12px;
       cursor: pointer;
       font-size: 14px;
+      color: var(--text);
     }
 
     .btn:disabled{
@@ -293,7 +385,11 @@
       </div>
 
       <div id="categories" class="categories"></div>
-      <div id="hitsLine" class="hits"></div>
+
+      <div class="hits-row">
+        <div id="hitsLine"></div>
+        <button id="themeToggle" class="theme-chip" type="button" aria-label="Växla tema">Dark</button>
+      </div>
     </div>
 
     <!-- Anchor: start of results area -->
@@ -322,6 +418,46 @@
   <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
 
   <script>
+    /* Theme handling */
+    function getEffectiveTheme(){
+      const manual = document.documentElement.getAttribute("data-theme");
+      if (manual === "dark" || manual === "light") return manual;
+      const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+      return prefersDark ? "dark" : "light";
+    }
+
+    function applyThemeFromStorage(){
+      const saved = localStorage.getItem("theme"); // "dark" | "light" | null
+      if (saved === "dark" || saved === "light"){
+        document.documentElement.setAttribute("data-theme", saved);
+      } else {
+        document.documentElement.removeAttribute("data-theme"); // system default
+      }
+      updateThemeToggleLabel();
+    }
+
+    function setTheme(mode){
+      localStorage.setItem("theme", mode);
+      document.documentElement.setAttribute("data-theme", mode);
+      updateThemeToggleLabel();
+    }
+
+    function updateThemeToggleLabel(){
+      const btn = document.getElementById("themeToggle");
+      if (!btn) return;
+      const theme = getEffectiveTheme();
+      btn.textContent = (theme === "dark") ? "Ljus" : "Mörk";
+      btn.setAttribute("aria-label", theme === "dark" ? "Växla till ljust tema" : "Växla till mörkt tema");
+    }
+
+    applyThemeFromStorage();
+
+    document.getElementById("themeToggle").addEventListener("click", () => {
+      const current = getEffectiveTheme();
+      setTheme(current === "dark" ? "light" : "dark");
+    });
+
+    /* App logic */
     function norm(str){
       return (str || "")
         .toLowerCase()
@@ -452,14 +588,12 @@
       hitsLine.textContent = text || "";
     }
 
-    // Scroll to just below sticky (start of results/panels)
     function scrollToResultsTop(){
       const stickyH = stickyBar.getBoundingClientRect().height;
       const y = resultsTop.getBoundingClientRect().top + window.scrollY - stickyH - 8;
       window.scrollTo({ top: Math.max(0, y), behavior: "smooth" });
     }
 
-    // Hide single-card modes
     function hidePanels(){
       sharedWrap.style.display = "none";
       sharedCard.innerHTML = "";
@@ -471,7 +605,6 @@
       if (location.hash) history.replaceState(null, "", location.pathname + location.search);
     }
 
-    // Subtle divider when scrolling
     window.addEventListener("scroll", () => {
       if (window.scrollY > 6) stickyBar.classList.add("scrolled");
       else stickyBar.classList.remove("scrolled");
@@ -479,7 +612,7 @@
 
     clearBtn.addEventListener("click", () => {
       setInteracted();
-      clearHash();          // leaving shared mode if any
+      clearHash();
       hidePanels();
 
       searchInput.value = "";
@@ -512,7 +645,7 @@
 
       chip.addEventListener("click", () => {
         setInteracted();
-        clearHash();   // leaving shared mode if any
+        clearHash();
         hidePanels();
 
         const isSame = (activeCategory === cat);
@@ -575,7 +708,7 @@
       scopeEl.querySelectorAll(".tag").forEach(tag => {
         tag.addEventListener("click", () => {
           setInteracted();
-          clearHash();     // leaving shared mode if any
+          clearHash();
           hidePanels();
 
           const kw = tag.getAttribute("data-kw") || "";
@@ -593,15 +726,10 @@
       scopeEl.querySelectorAll("[data-share]").forEach(a => {
         a.addEventListener("click", async (e) => {
           e.preventDefault();
-
           const id = a.getAttribute("data-share");
           const hash = `id-${id}`;
           const url = `${location.origin}${location.pathname}#${hash}`;
-
-          // Set hash (will open shared view)
           location.hash = hash;
-
-          // best effort copy
           try { await navigator.clipboard.writeText(url); } catch {}
         });
       });
@@ -706,7 +834,7 @@
       shown.forEach(d => {
         const el = document.createElement("div");
         el.className = "card";
-        el.id = `id-${d.id}`; // stable anchor for sharing
+        el.id = `id-${d.id}`;
         renderCardInto(el, d, terms, true);
         resultsEl.appendChild(el);
       });
@@ -728,7 +856,6 @@
       const terms = tokenize(searchInput.value);
       const nothingSelected = !terms.length && !activeCategory;
 
-      // If a shared hash exists, shared mode wins
       const hash = (location.hash || "").replace("#", "");
       if (hash.startsWith("id-")){
         hasInteracted = true;
@@ -778,12 +905,10 @@
       debouncedSearch();
     });
 
-    // Handle shared hash changes
-    function onHashChange(){
+    window.addEventListener("hashchange", () => {
       visibleCount = 20;
       search(true);
-    }
-    window.addEventListener("hashchange", onHashChange);
+    });
 
     // Initial UI state
     setCategoriesOpen(!isMobile());
@@ -795,6 +920,15 @@
       isMobileMQ.addEventListener?.("change", () => {
         setCategoriesOpen(!isMobile());
         updateToggleLabel();
+      });
+    }
+
+    // If user changes system theme and they have not set a manual theme, update button label
+    if (window.matchMedia){
+      const mq = window.matchMedia("(prefers-color-scheme: dark)");
+      mq.addEventListener?.("change", () => {
+        const saved = localStorage.getItem("theme");
+        if (saved !== "dark" && saved !== "light") updateThemeToggleLabel();
       });
     }
   </script>
