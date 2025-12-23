@@ -14639,7 +14639,7 @@ const agnesData = [
     "date": "2022-11-15",
     "url": "https://www.sverigesradio.se/avsnitt/agnes-wold-om-varfor-sa-manga-av-oss-har-ont-i-magen",
     "question": "Kan det vara farligt att svälja tuggummi, och kan det fastna i tarmarna?",
-    "answer": "Nej, för en normalt frisk person är det ofarligt att svälja tuggummi då det passerar genom systemet utan att orsaka skada[cite: 14, 16, 17]. [cite_start]Det är en myt att det fastnar i en frisk tarm, men det kan teoretiskt uppstå problem om man har en tarmsjukdom med förträngningar, exempelvis Crohns sjukdom[cite: 15, 16]. [cite_start]Den verkliga faran med tuggummi är om man råkar dra ner det i luftstrupen, vilket kan vara livshotande[cite: 21, 22].",
+    "answer": "Nej, för en normalt frisk person är det ofarligt att svälja tuggummi då det passerar genom systemet utan att orsaka skada. Det är en myt att det fastnar i en frisk tarm, men det kan teoretiskt uppstå problem om man har en tarmsjukdom med förträngningar, exempelvis Crohns sjukdom. Den verkliga faran med tuggummi är om man råkar dra ner det i luftstrupen, vilket kan vara livshotande.",
     "category1": "Mage, Tarm & Matsmältning",
     "category2": "",
     "keywords": [
@@ -14661,7 +14661,7 @@ const agnesData = [
     "date": "2022-11-15",
     "url": "https://www.sverigesradio.se/avsnitt/agnes-wold-om-varfor-sa-manga-av-oss-har-ont-i-magen",
     "question": "Varför upplevs det som så pinsamt och tabubelagt att prata om magproblem?",
-    "answer": "Skammen kring magproblem är kulturellt betingad och inlärd, då barn inte känner samma skam[cite: 34, 36]. [cite_start]Det finns en föreställning om att kroppsdelar är \"smutsigare\" ju längre ner på kroppen de sitter, där ändtarmen har lägst status[cite: 39, 50]. [cite_start]Inom medicinen har dock tarmkirurgi hög status, vilket visar att skammen är en social konstruktion snarare än en biologisk sanning[cite: 40, 41].",
+    "answer": "Skammen kring magproblem är kulturellt betingad och inlärd, då barn inte känner samma skam. Det finns en föreställning om att kroppsdelar är \"smutsigare\" ju längre ner på kroppen de sitter, där ändtarmen har lägst status. Inom medicinen har dock tarmkirurgi hög status, vilket visar att skammen är en social konstruktion snarare än en biologisk sanning.",
     "category1": "Mage, Tarm & Matsmältning",
     "category2": "",
     "keywords": [
@@ -14683,7 +14683,7 @@ const agnesData = [
     "date": "2022-11-15",
     "url": "https://www.sverigesradio.se/avsnitt/agnes-wold-om-varfor-sa-manga-av-oss-har-ont-i-magen",
     "question": "Kan stress eller bråkande barn ge någon magsår?",
-    "answer": "Nej, man får inte äkta magsår av stress eller bråk[cite: 73, 79]. [cite_start]Ett magsår är ett hål i tolvfingertarmen eller magsäcken som oftast orsakas av bakterien Helicobacter pylori[cite: 73]. [cite_start]En annan vanlig orsak är överkonsumtion av läkemedel som innehåller acetylsalicylsyra eller kortison, vilka hämmar produktionen av det slem som skyddar magsäcken[cite: 74, 76]. [cite_start]Stress kan ge magont, men inte det sår som definierar sjukdomen[cite: 80].",
+    "answer": "Nej, man får inte äkta magsår av stress eller bråk. Ett magsår är ett hål i tolvfingertarmen eller magsäcken som oftast orsakas av bakterien Helicobacter pylori. En annan vanlig orsak är överkonsumtion av läkemedel som innehåller acetylsalicylsyra eller kortison, vilka hämmar produktionen av det slem som skyddar magsäcken. Stress kan ge magont, men inte det sår som definierar sjukdomen.",
     "category1": "Mage, Tarm & Matsmältning",
     "category2": "Livsstil: Sömn, Alkohol & Stress",
     "keywords": [
@@ -14705,7 +14705,7 @@ const agnesData = [
     "date": "2022-11-15",
     "url": "https://www.sverigesradio.se/avsnitt/agnes-wold-om-varfor-sa-manga-av-oss-har-ont-i-magen",
     "question": "Vad är skillnaden mellan magsår och magkatarr?",
-    "answer": "Magsår är en specifik skada orsakad av bakterier eller mediciner, medan magkatarr (gastrit) är ett äldre samlingsnamn för magont där man sällan hittar någon synlig inflammation eller skada[cite: 73, 84, 86]. [cite_start]Vid magkatarr handlar det ofta om en funktionell smärta som kan utlösas av stress, konflikter eller svårsmält mat som kål, men den exakta medicinska orsaken är ofta okänd[cite: 89, 94, 97].",
+    "answer": "Magsår är en specifik skada orsakad av bakterier eller mediciner, medan magkatarr (gastrit) är ett äldre samlingsnamn för magont där man sällan hittar någon synlig inflammation eller skada. Vid magkatarr handlar det ofta om en funktionell smärta som kan utlösas av stress, konflikter eller svårsmält mat som kål, men den exakta medicinska orsaken är ofta okänd.",
     "category1": "Mage, Tarm & Matsmältning",
     "category2": "Sjukdomar & Krämpor",
     "keywords": [
@@ -14727,7 +14727,7 @@ const agnesData = [
     "date": "2022-11-15",
     "url": "https://www.sverigesradio.se/avsnitt/agnes-wold-om-varfor-sa-manga-av-oss-har-ont-i-magen",
     "question": "Har blindtarmsinflammationer blivit mindre vanliga jämfört med förr?",
-    "answer": "Ja, förekomsten av blindtarmsinflammation har minskat signifikant i rika länder sedan 1990-talet[cite: 136]. [cite_start]Blindtarmen är ett immunologiskt organ, och minskningen kan bero på vår höga hygienstandard och minskade tarminfektioner, eller ökad antibiotikaanvändning[cite: 107, 111, 113]. [cite_start]Historiskt ökade sjukdomen under industrialiseringen men minskar nu när samhället blivit mer sterilt[cite: 135, 145].",
+    "answer": "Ja, förekomsten av blindtarmsinflammation har minskat signifikant i rika länder sedan 1990-talet. Blindtarmen är ett immunologiskt organ, och minskningen kan bero på vår höga hygienstandard och minskade tarminfektioner, eller ökad antibiotikaanvändning. Historiskt ökade sjukdomen under industrialiseringen men minskar nu när samhället blivit mer sterilt.",
     "category1": "Mage, Tarm & Matsmältning",
     "category2": "Hygien, Städning & Bakterieskräck",
     "keywords": [
@@ -14748,7 +14748,7 @@ const agnesData = [
     "date": "2022-11-15",
     "url": "https://www.sverigesradio.se/avsnitt/agnes-wold-om-varfor-sa-manga-av-oss-har-ont-i-magen",
     "question": "Är det farligt, eller till och med dödligt, att inte ha avföring på en längre tid?",
-    "answer": "Nej, man dör inte av förstoppning i sig, och tarmen sprängs inte av att man håller sig[cite: 153, 177]. [cite_start]Det blir farligt först om det finns ett mekaniskt hinder, såsom en tumör, som stoppar flödet (ileus)[cite: 155, 159]. [cite_start]Vid vanlig förstoppning kan avföringen ligga kvar länge utan att det är livshotande, även om det kan vara smärtsamt och obehagligt[cite: 164, 180].",
+    "answer": "Nej, man dör inte av förstoppning i sig, och tarmen sprängs inte av att man håller sig. Det blir farligt först om det finns ett mekaniskt hinder, såsom en tumör, som stoppar flödet (ileus). Vid vanlig förstoppning kan avföringen ligga kvar länge utan att det är livshotande, även om det kan vara smärtsamt och obehagligt.",
     "category1": "Mage, Tarm & Matsmältning",
     "category2": "",
     "keywords": [
@@ -14770,7 +14770,7 @@ const agnesData = [
     "date": "2022-11-15",
     "url": "https://www.sverigesradio.se/avsnitt/agnes-wold-om-varfor-sa-manga-av-oss-har-ont-i-magen",
     "question": "Vad kan man göra för att få igång en trög mage?",
-    "answer": "Man kan dra nytta av den gastrokoliska reflexen som signalerar till tarmen att tömmas cirka 15–30 minuter efter maten[cite: 166, 170]. [cite_start]Kaffe är effektivt för att sätta fart på magen, medan te och mjölk kan verka förstoppande[cite: 172, 197, 200]. [cite_start]Att äta stora mängder mat, särskilt grönsaker, ökar volymen i tarmen vilket tvingar fram en tömning[cite: 181, 194].",
+    "answer": "Man kan dra nytta av den gastrokoliska reflexen som signalerar till tarmen att tömmas cirka 15–30 minuter efter maten. Kaffe är effektivt för att sätta fart på magen, medan te och mjölk kan verka förstoppande. Att äta stora mängder mat, särskilt grönsaker, ökar volymen i tarmen vilket tvingar fram en tömning.",
     "category1": "Mage, Tarm & Matsmältning",
     "category2": "Mat, Näring & Livsmedelssäkerhet",
     "keywords": [
@@ -14792,7 +14792,7 @@ const agnesData = [
     "date": "2022-11-15",
     "url": "https://www.sverigesradio.se/avsnitt/agnes-wold-om-varfor-sa-manga-av-oss-har-ont-i-magen",
     "question": "Stämmer det att man fiser mer när man blir äldre?",
-    "answer": "Ja, det är troligt att man gör det eftersom ringmuskeln i slutet av tarmen, som ska hålla inne gas och avföring, blir mer förslappad med åldern[cite: 211, 214].",
+    "answer": "Ja, det är troligt att man gör det eftersom ringmuskeln i slutet av tarmen, som ska hålla inne gas och avföring, blir mer förslappad med åldern.",
     "category1": "Mage, Tarm & Matsmältning",
     "category2": "Åldrande & Döden",
     "keywords": [
@@ -14814,7 +14814,7 @@ const agnesData = [
     "date": "2022-11-15",
     "url": "https://www.sverigesradio.se/avsnitt/agnes-wold-om-varfor-sa-manga-av-oss-har-ont-i-magen",
     "question": "Vad är tarmfickor och vad kan man göra åt besvär från dem?",
-    "answer": "Tarmfickor (divertiklar) är utbuktningar i tjocktarmens vägg som ofta uppstår där blodkärl går in i tarmen, särskilt i den S-formade delen på vänster sida[cite: 226, 230]. [cite_start]Det är vanligt hos äldre och kan orsaka smärta och feber om bakterier fastnar och skapar en inflammation[cite: 232, 239]. [cite_start]Lättare inflammationer läker ofta av sig själva, medan svårare fall kan kräva antibiotika eller operation[cite: 232, 234].",
+    "answer": "Tarmfickor (divertiklar) är utbuktningar i tjocktarmens vägg som ofta uppstår där blodkärl går in i tarmen, särskilt i den S-formade delen på vänster sida. Det är vanligt hos äldre och kan orsaka smärta och feber om bakterier fastnar och skapar en inflammation. Lättare inflammationer läker ofta av sig själva, medan svårare fall kan kräva antibiotika eller operation.",
     "category1": "Mage, Tarm & Matsmältning",
     "category2": "Sjukdomar & Krämpor",
     "keywords": [
@@ -14836,7 +14836,7 @@ const agnesData = [
     "date": "2022-11-15",
     "url": "https://www.sverigesradio.se/avsnitt/agnes-wold-om-varfor-sa-manga-av-oss-har-ont-i-magen",
     "question": "Behöver en person med IBS ligga på soffan hela dagarna?",
-    "answer": "Nej, IBS (Irritable Bowel Syndrome) är en funktionell störning med ökad smärtkänslighet och oregelbunden tarmfunktion, men det är inte ett farligt tillstånd som kräver sängliggande[cite: 256, 264]. [cite_start]Det kan vara skönt att vila en stund efter maten för att undvika smärta, men diagnosen i sig är inget hinder för att vara aktiv och delta i vardagssysslor[cite: 268, 270].",
+    "answer": "Nej, IBS (Irritable Bowel Syndrome) är en funktionell störning med ökad smärtkänslighet och oregelbunden tarmfunktion, men det är inte ett farligt tillstånd som kräver sängliggande. Det kan vara skönt att vila en stund efter maten för att undvika smärta, men diagnosen i sig är inget hinder för att vara aktiv och delta i vardagssysslor.",
     "category1": "Mage, Tarm & Matsmältning",
     "category2": "Livsstil: Sömn, Alkohol & Stress",
     "keywords": [
@@ -14858,7 +14858,7 @@ const agnesData = [
     "date": "2022-11-15",
     "url": "https://www.sverigesradio.se/avsnitt/agnes-wold-om-varfor-sa-manga-av-oss-har-ont-i-magen",
     "question": "Är livet förstört om man får diagnosen ulcerös kolit?",
-    "answer": "Nej, prognosen för ulcerös kolit är idag mycket god tack vare stora framsteg inom immunologiska läkemedel, vilket gör att färre behöver operera bort tarmen eller få stomi[cite: 286, 289, 292]. [cite_start]Det är en inflammatorisk tarmsjukdom som inte ska blandas ihop med IBS[cite: 285]. [cite_start]En medicinsk kuriositet är att rökning faktiskt skyddar mot ulcerös kolit, till skillnad från Crohns sjukdom där rökning kraftigt försämrar tillståndet[cite: 300].",
+    "answer": "Nej, prognosen för ulcerös kolit är idag mycket god tack vare stora framsteg inom immunologiska läkemedel, vilket gör att färre behöver operera bort tarmen eller få stomi. Det är en inflammatorisk tarmsjukdom som inte ska blandas ihop med IBS. En medicinsk kuriositet är att rökning faktiskt skyddar mot ulcerös kolit, till skillnad från Crohns sjukdom där rökning kraftigt försämrar tillståndet.",
     "category1": "Mage, Tarm & Matsmältning",
     "category2": "Sjukdomar & Krämpor",
     "keywords": [
@@ -14880,7 +14880,7 @@ const agnesData = [
     "date": "2022-11-15",
     "url": "https://www.sverigesradio.se/avsnitt/agnes-wold-om-varfor-sa-manga-av-oss-har-ont-i-magen",
     "question": "Varför får man ont i magen efter att man har ätit?",
-    "answer": "Att få ont i magen efter maten är vanligt och oftast helt ofarligt[cite: 317, 328]. [cite_start]Det beror på att nerverna i mag-tarmkanalen reagerar på att tarmen tänjs ut eller på innehållet i maten, men den exakta mekanismen är ofta oklar[cite: 313, 330]. [cite_start]Vissa livsmedel kan vara mer svårsmälta, men smärtan är ett normalt tillstånd och inget man behöver oroa sig för[cite: 309, 317].",
+    "answer": "Att få ont i magen efter maten är vanligt och oftast helt ofarligt. Det beror på att nerverna i mag-tarmkanalen reagerar på att tarmen tänjs ut eller på innehållet i maten, men den exakta mekanismen är ofta oklar. Vissa livsmedel kan vara mer svårsmälta, men smärtan är ett normalt tillstånd och inget man behöver oroa sig för.",
     "category1": "Mage, Tarm & Matsmältning",
     "category2": "Mat, Näring & Livsmedelssäkerhet",
     "keywords": [
