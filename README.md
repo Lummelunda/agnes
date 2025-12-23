@@ -2,7 +2,7 @@
 
 Sök bland 1195 svar baserat på podden *Fråga Agnes Wold*.
 
-Det är ett fristående, icke-kommersiellt projekt i utbildningssyfte. 
+Detta är ett fristående, icke-kommersiellt projekt i utbildningssyfte. 
 
 Du kan:
 - söka på valfria ord och fraser (fråga, svar och nyckelord)
