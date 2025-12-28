@@ -130,7 +130,9 @@ a { color: inherit; text-decoration: none; }
   color: var(--text-muted);
 }
 
-.clear-btn:hover { color: var(--text-main); }
+.clear-btn:hover, .panel-x:hover { 
+  color: var(--text-main); 
+}
 
 /* 4. CHIPS & FILTERS */
 .filter-toggle-row {
