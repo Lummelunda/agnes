@@ -3679,7 +3679,7 @@ const agnesData = [
     "date": "2025-04-08",
     "url": "https://sverigesradio.se/avsnitt/agnes-wold-svarar-pa-fragor-om-tarmen-och-olika-magproblem",
     "question": "Kan man lära magen att hantera svårsmälta livsmedel som kål, lök och bönor bättre, eller är toleransen medfödd?",
-    "answer": "Toleransen är sannolikt till stor del individuel. Det är svårt att varaktigt förändra tarmfloran genom kosten, även om bakteriesammansättningen kan påverkas tillfälligt. Vissa livsmedel innehåller fibrer som människan saknar enzymer för att bryta ner, vilket orsakar gaser. Att mixa bönor och linser till en slät konsistens kan underlätta passagen genom tarmen jämfört med att äta dem hela.",
+    "answer": "Toleransen är sannolikt till stor del individuell. Det är svårt att varaktigt förändra tarmfloran genom kosten, även om bakteriesammansättningen kan påverkas tillfälligt. Vissa livsmedel innehåller fibrer som människan saknar enzymer för att bryta ner, vilket orsakar gaser. Att mixa bönor och linser till en slät konsistens kan underlätta passagen genom tarmen jämfört med att äta dem hela.",
     "keywords": [
       "bönor",
       "lök",
